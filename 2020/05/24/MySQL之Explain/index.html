@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>MySQL之explain | guozenghuang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="利用explain执行计划，进行SQL执行分析，为优化SQL执行效率提供依据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL之explain">
+<meta property="og:url" content="ttps://guozenghuang.github.io/2020/05/24/MySQL之Explain/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="利用explain执行计划，进行SQL执行分析，为优化SQL执行效率提供依据">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="ttps:///images/explain/explain.png">
+<meta property="article:published_time" content="2020-05-24T09:56:37.000Z">
+<meta property="article:modified_time" content="2020-08-20T12:51:36.508Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="ttps:///images/explain/explain.png">
+  
+    <link rel="alternate" href="/atom.xml" title="guozenghuang" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">guozenghuang</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">知识的岛屿越大,无知的海岸线就越长。</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ttps://guozenghuang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-MySQL之Explain" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/24/MySQL%E4%B9%8BExplain/" class="article-date">
+  <time class="dt-published" datetime="2020-05-24T09:56:37.000Z" itemprop="datePublished">2020-05-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      MySQL之explain
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/explain/explain.png" alt="explain"></p>
+<h2 id="利用explain执行计划，进行SQL执行分析，为优化SQL执行效率提供依据"><a href="#利用explain执行计划，进行SQL执行分析，为优化SQL执行效率提供依据" class="headerlink" title="利用explain执行计划，进行SQL执行分析，为优化SQL执行效率提供依据"></a>利用<code>explain</code>执行计划，进行SQL执行分析，为优化SQL执行效率提供依据</h2><a id="more"></a>
+
+<blockquote>
+<p><code>explain</code> 是 <code>MySQL</code> 的自带查询优化器，负责 <code>select</code> 语句的优化器，可以模拟优化器执行SQL查询语句，从而知道<code>MySQL</code>是如何处理SQL的</p>
+</blockquote>
+<h3 id="explain-输出"><a href="#explain-输出" class="headerlink" title="explain 输出"></a>explain 输出</h3><ul>
+<li><code>id</code>：<code>select</code>标识符 </li>
+<li><code>select_type</code>：<code>select</code>的种类</li>
+<li><code>table</code>：<code>select</code>输出字段的来源表</li>
+<li><code>partitions</code>：输出的分区</li>
+<li><code>type</code>：连接类型</li>
+<li><code>possible_keys</code>：可能用到的索引</li>
+<li><code>key</code>：实际使用的索引</li>
+<li><code>key_len</code>：表示索引长度，</li>
+<li><code>ref</code>：反映哪些列或常量被用于查找索引列上的值</li>
+<li><code>rows</code>：找到所需的记录所需要读取的行数</li>
+<li><code>filtered</code>：返回结果的行占需要读到的行(rows列的值)的百分比</li>
+<li><code>Extra</code>：额外信息</li>
+</ul>
+<h4 id="标识符-id"><a href="#标识符-id" class="headerlink" title="标识符 id"></a>标识符 <code>id</code></h4><p><code>SELECT</code>标识符，<code>SELECT</code>语句的序号。</p>
+<h4 id="SELECT类型-select-type"><a href="#SELECT类型-select-type" class="headerlink" title="SELECT类型 select_type"></a>SELECT类型 <code>select_type</code></h4><ul>
+<li><p>SELECT类型主要有如下几种：</p>
+<ul>
+<li><code>SIMPLE</code>：最简单的<code>SELECT</code></li>
+<li><code>PRIMARY</code>：查询中如果有包含复杂的子SQL，则最外层显示为<code>PRIMARY</code></li>
+<li><code>UNION</code>：当第二个或者后面的<code>SELECT</code>后，则标记为<code>UNION</code></li>
+<li><code>DEPENDENT UNION</code>：与<code>UNION</code>类似，但此时的<code>UNION</code>结果受外层查询影响</li>
+<li><code>UNION RESULT</code>：从<code>UNION</code>的结果进行<code>SELECT</code></li>
+<li><code>SUBQUERY</code>：在<code>SELECT</code>的语法中包含子查询</li>
+<li><code>DEPENDENT SUBQUERY</code>：与<code>SUBQUERY</code>类似，但此时的<code>SUBQUERY</code>结果受外层查询影响</li>
+<li><code>DERIVED</code>：派生表，当<code>FROM</code>后面是个子查询结果集时，即临时表，从而会生成一个派生表</li>
+<li><code>DEPENDENT DERIVED</code>：与<code>DERIVED</code>类似，但此时的<code>DERIVED</code>结果受外层查询影响</li>
+<li><code>MATERIALIZED</code>：</li>
+<li><code>UNCACHEABLE SUBQUERY</code>：子查询的结果不能被缓存，即每次都需要计算（耗时操作）</li>
+<li><code>UNCACHEABLE UNION</code>：<code>UNION</code>的查询结果不能被缓存，同上</li>
+</ul>
+</li>
+</ul>
+<h4 id="分区-partitions"><a href="#分区-partitions" class="headerlink" title="分区 partitions"></a>分区 <code>partitions</code></h4><ul>
+<li>查询的结果命中的分区情况，为NULL时表示未做分区</li>
+</ul>
+<h4 id="连接类型-type（重要）"><a href="#连接类型-type（重要）" class="headerlink" title="连接类型 type（重要）"></a>连接类型 <code>type</code>（重要）</h4><ul>
+<li><p>它描述了找到所需数据使用的扫描方式。</p>
+<p>  最常见的扫描方式有：</p>
+<ul>
+<li><p><code>system</code>：系统表，少量数据，往往不需要进行磁盘IO</p>
+</li>
+<li><p><code>const</code>：常量连接</p>
+</li>
+<li><p><code>eq_ref</code>：主键索引(<code>primary key</code>)或者非空唯一索引(<code>unique not null</code>)等值扫描</p>
+</li>
+<li><p><code>ref</code>：非主键非唯一索引等值扫描</p>
+</li>
+<li><p><code>range</code>：范围扫描</p>
+</li>
+<li><p><code>index</code>：索引树扫描</p>
+</li>
+<li><p><code>ALL</code>：全表扫描(<code>full table scan</code>)</p>
+<p>上述扫描方式由快至慢为：<code>system &gt; const &gt; eq_ref &gt; ref &gt; range &gt; index &gt; ALL</code></p>
+</li>
+</ul>
+<ol>
+<li><p><code>system</code>：数据已经加载到内存里，不需要进行磁盘IO。直接从内存中取值，速度最快</p>
+</li>
+<li><p><code>const</code>：<code>const</code>扫描的条件为：__命中主键(<code>primary key</code>)或者唯一(<code>unique</code>)索引__；被连接的部分是一个常量(<code>const</code>)值；此类扫描效率极高，返回数据少，速度非常快</p>
+</li>
+<li><p><code>eq_ref</code>：<code>eq_ref</code>扫描的条件为，对于前表的每一行(<code>row</code>)，后表只有一行被扫描。__相当于：1.<code>join</code>查询；2.命中主键(<code>primary key</code>)或者非空唯一(<code>unique not null</code>)索引；3.等值连接。__此类扫描也是非常快</p>
+</li>
+<li><p><code>ref</code>：<code>ref</code>与<code>eq_ref</code>差别在于第二命中条件。__若命中为普通非唯一(<code>non unique</code>)索引，则为<code>ref</code>扫描__。对于<code>join</code>查询，表现为对于主表的一行，可能会有多于一行的从表数据被扫描。而常量连接查询对于普通非唯一(<code>non unique</code>)索引，会由<code>const</code>降级为<code>const</code>索引。<code>ref</code>索引虽说会比<code>eq_ref</code>索引慢，但仍是较快的扫描方式</p>
+</li>
+<li><p><code>range</code>：<code>range</code>扫描即__索引__上的范围查询，它会在索引上扫码特定范围内的值</p>
+</li>
+<li><p><code>index</code>：扫描__索引__上的__全部__数据</p>
+</li>
+<li><p><code>ALL</code>：__全表__扫描</p>
+<p><strong>即有如下情况：若连接时，关联的为主键(<code>primary key</code>)，则会有<code>eq_ref</code>扫描；关联的为普通非唯一(<code>non unique</code>)索引，则会有<code>ref</code>扫描；若无索引，则为ALL全表扫描。</strong></p>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="可能索引-possible-keys"><a href="#可能索引-possible-keys" class="headerlink" title="可能索引 possible_keys"></a>可能索引 <code>possible_keys</code></h4><p><code>possible_keys</code> 列指示<code>MySQL</code>可以选择查找表中的索引，若为NULL，则为无相关索引。</p>
+<h4 id="实际使用的索引-key"><a href="#实际使用的索引-key" class="headerlink" title="实际使用的索引 key"></a>实际使用的索引 <code>key</code></h4><p><code>key</code> 列表示<code>MySQL</code>执行查询语句时，各<code>SELECT</code>实际使用的索引。（要强制MySQL使用或忽略列出的索引，则需要在语句后使用__<code>FORCE INDEX</code>，<code>USE INDEX</code>或<code>IGNORE INDEX</code>__）</p>
+<h4 id="索引长度-key-len"><a href="#索引长度-key-len" class="headerlink" title="索引长度 key_len"></a>索引长度 <code>key_len</code></h4><p><code>key_len</code> 列表示索引的长度，越短越好。</p>
+<h4 id="参照-ref"><a href="#参照-ref" class="headerlink" title="参照 ref"></a>参照 <code>ref</code></h4><p>反映哪些列或常量被用于查找索引列上的值，通常有：<code>const</code>，对应字段名以及<code>func</code>，分别是常量，数据列以及方法。</p>
+<h4 id="读取行数-rows"><a href="#读取行数-rows" class="headerlink" title="读取行数 rows"></a>读取行数 <code>rows</code></h4><p>根据表统计信息及索引选用情况，估算找到所需的记录需要读取的行数</p>
+<h4 id="过滤-filtered"><a href="#过滤-filtered" class="headerlink" title="过滤 filtered"></a>过滤 <code>filtered</code></h4><p>返回结果的行占需要读到的行(rows列的值)的百分比，越大越好</p>
+<h4 id="额外信息-Extra（重要）"><a href="#额外信息-Extra（重要）" class="headerlink" title="额外信息 Extra（重要）"></a>额外信息 <code>Extra</code>（重要）</h4><p>当我们需要优化的对应查询的时候可以在额外信息上看到当前的查询，使用的索引情况。</p>
+<ul>
+<li><code>using index</code>：即<code>MySQL</code>的查询命中索引，直接从索引中取值。</li>
+<li><code>using where</code>：这说明服务器在存储引擎收到行后将进行过滤。有些where中的条件会有属于索引的列，当它读取使用索引的时候，就会被过滤</li>
+<li><code>using temporary</code>：这意味着<code>MySQL</code>对查询结果进行排序的时候使用了一张临时表</li>
+<li><code>using filesort</code>：这个说明<code>MySQL</code>会对数据使用一个外部的索引排序，而不是按照表内的索引顺序进行读取</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li><code>explain</code>结果中的<code>type</code>字段，表示连接类型，它描述了找到所需数据使用的扫描方式</li>
+<li>常见的扫描类型有：<code>system&gt;const&gt;eq_ref&gt;ref&gt;range&gt;index&gt;ALL</code>，其扫描速度由快到慢</li>
+<li>各类扫描类型的要点是：<ul>
+<li><code>system</code>：最快：不进行磁盘IO</li>
+<li><code>const</code>：PK或者unique上的等值查询</li>
+<li><code>eq_ref</code>：PK或者unique上的join查询，等值匹配，对于前表的每一行(row)，后表只有一行命中</li>
+<li><code>ref</code>：非唯一索引，等值匹配，可能有多行命中</li>
+<li><code>range</code>：索引上的范围扫描，例如：between/in/比较</li>
+<li><code>index</code>：索引上的全集扫描，例如：InnoDB的count</li>
+<li><code>ALL最慢</code>：全表扫描(<code>full table scan</code>)</li>
+</ul>
+</li>
+<li>建立正确的索引(<code>index</code>)，非常重要</li>
+<li>使用<code>explain</code>了解并优化执行计划，非常重要</li>
+</ul>
+<h3 id="PS-其他常见SQL性能瓶颈（硬件）"><a href="#PS-其他常见SQL性能瓶颈（硬件）" class="headerlink" title="PS:其他常见SQL性能瓶颈（硬件）"></a>PS:其他常见SQL性能瓶颈（硬件）</h3><ul>
+<li>CPU：一般发生在数据装入内存、从磁盘读取以及一些函数运算</li>
+<li>I/O：一般发生在装入数据时，数据量数据远大于数据页或其他IO瓶颈上。包括不仅限于网络IO/接口IO等<br>使用top，free，iostat，vmstat等linux命令来查看数据库系统的性能状态</li>
+</ul>
+<h3 id="Credits"><a href="#Credits" class="headerlink" title="Credits"></a>Credits</h3><p><a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/8.0/en/explain-output.html">MySQL explain官方文档</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ttps://guozenghuang.github.io/2020/05/24/MySQL之Explain/" data-id="ckk42argb000q3oua5e58a89p" data-title="MySQL之explain" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">关系型数据库与非关系型数据库(SQL VS NoSQL)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FineReport/" rel="tag">FineReport</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/" rel="tag">NoSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/" rel="tag">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/v2ray/" rel="tag">v2ray</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" rel="tag">个人简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">正则表达式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CentOS/" style="font-size: 10px;">CentOS</a> <a href="/tags/FineReport/" style="font-size: 10px;">FineReport</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SQL/" style="font-size: 13.33px;">SQL</a> <a href="/tags/Ubuntu/" style="font-size: 20px;">Ubuntu</a> <a href="/tags/git/" style="font-size: 16.67px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 16.67px;">hexo</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/v2ray/" style="font-size: 10px;">v2ray</a> <a href="/tags/vscode/" style="font-size: 10px;">vscode</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">个人简介</a> <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 10px;">正则表达式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/24/MySQL%E4%B9%8BExplain/">MySQL之explain</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">关系型数据库与非关系型数据库(SQL VS NoSQL)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/31/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9B%B8%E5%85%B3/">CentOS服务器相关</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/10/%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8MySQL%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95/">配置远程服务器MySQL问题排查记录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/20/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">nginx反向代理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 guozenghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

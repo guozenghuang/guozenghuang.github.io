@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>常用SQL语法 | guozenghuang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="工作中常用的一些SQL语句">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用SQL语法">
+<meta property="og:url" content="ttps://guozenghuang.github.io/2019/06/24/常用SQL语法/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="工作中常用的一些SQL语句">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="ttps:///images/profile/oracle.png">
+<meta property="article:published_time" content="2019-06-24T13:23:59.000Z">
+<meta property="article:modified_time" content="2019-12-06T06:29:46.000Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="ttps:///images/profile/oracle.png">
+  
+    <link rel="alternate" href="/atom.xml" title="guozenghuang" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">guozenghuang</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">知识的岛屿越大,无知的海岸线就越长。</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ttps://guozenghuang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-常用SQL语法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/06/24/%E5%B8%B8%E7%94%A8SQL%E8%AF%AD%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2019-06-24T13:23:59.000Z" itemprop="datePublished">2019-06-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      常用SQL语法
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/profile/oracle.png" alt="oracle"></p>
+<h2 id="工作中常用的一些SQL语句"><a href="#工作中常用的一些SQL语句" class="headerlink" title="工作中常用的一些SQL语句"></a>工作中常用的一些SQL语句</h2><a id="more"></a>
+
+<hr>
+<h3 id="复制表格"><a href="#复制表格" class="headerlink" title="复制表格"></a>复制表格</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> new_table <span class="keyword">AS</span> </span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> old_table</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="列转行-listagg"><a href="#列转行-listagg" class="headerlink" title="列转行 listagg"></a>列转行 listagg</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">LISTAGG</span>(列名,<span class="string">&#x27;分隔符&#x27;</span>) <span class="keyword">WITHIN</span> <span class="keyword">GROUP</span>(<span class="keyword">ORDER</span> <span class="keyword">BY</span> 列名)</span><br><span class="line"></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">LISTAGG</span>(column_name_a,<span class="string">&#x27;&#x27;</span>,<span class="string">&#x27;&#x27;</span>)</span><br><span class="line"><span class="keyword">WITHIN</span> <span class="keyword">GROUP</span>(<span class="keyword">ORDER</span> <span class="keyword">BY</span> column_name_a) </span><br><span class="line">  <span class="keyword">FROM</span> table_name</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="regexp-replace正则符号替换"><a href="#regexp-replace正则符号替换" class="headerlink" title="regexp_replace正则符号替换"></a>regexp_replace正则符号替换</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> regexp_replace(<span class="string">&#x27;A|B|C|D&#x27;</span>, <span class="string">&#x27;[|]&#x27;</span>, <span class="string">&#x27;&#x27;&#x27;,&#x27;&#x27;&#x27;</span>)</span><br><span class="line">  <span class="keyword">FROM</span> dual</span><br><span class="line"></span><br><span class="line">output: A<span class="string">&#x27;,&#x27;</span>B<span class="string">&#x27;,&#x27;</span>C,<span class="string">&#x27;D</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="查看临时表"><a href="#查看临时表" class="headerlink" title="查看临时表"></a>查看临时表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> </span><br><span class="line">  <span class="keyword">FROM</span> dba_segments</span><br><span class="line"> <span class="keyword">WHERE</span> segment_name <span class="keyword">LIKE</span> <span class="string">&#x27;%temp_table_name%&#x27;</span></span><br><span class="line"> <span class="comment">--AND owner=&#x27;DSDEMO&#x27;</span></span><br><span class="line"></span><br><span class="line">有暂存数据库(dsrept)</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line">  <span class="keyword">FROM</span> dsrept.temp_table_name</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="Oracle创建MySQL视图"><a href="#Oracle创建MySQL视图" class="headerlink" title="Oracle创建MySQL视图"></a>Oracle创建MySQL视图</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">OR</span> REPLACE <span class="keyword">VIEW</span> view_name</span><br><span class="line">(column_a,column_b)</span><br><span class="line"><span class="keyword">AS</span></span><br><span class="line"><span class="keyword">SELECT</span> &quot;column_a&quot;,&quot;column_a&quot;</span><br><span class="line"><span class="keyword">FROM</span> &quot;mysql_table&quot;<span class="variable">@mysql</span>_db;</span><br><span class="line"></span><br><span class="line">注：建立视图时视图字段需要重新命名，否则字段名称会带双引号</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="merge"><a href="#merge" class="headerlink" title="merge"></a>merge</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/spw55381155/article/details/79891305">merge:CSDN</a></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">MERGE</span> <span class="keyword">INTO</span> table_a a</span><br><span class="line"> <span class="keyword">USING</span> (<span class="keyword">SELECT</span> col_a1,col_a2 <span class="keyword">FROM</span> table_b) b</span><br><span class="line">    <span class="keyword">ON</span> (a.col_a1 <span class="operator">=</span> b.col_a1 <span class="keyword">AND</span> a.col_a3 <span class="operator">=</span> <span class="string">&#x27;arg&#x27;</span>)</span><br><span class="line">  <span class="keyword">WHEN</span> MATCHED <span class="keyword">THEN</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">SET</span> a.col_a4 <span class="operator">=</span> b.col_b1</span><br><span class="line">  <span class="keyword">WHEN</span> <span class="keyword">NOT</span> MATCHED <span class="keyword">THEN</span></span><br><span class="line"><span class="keyword">INSERT</span> (col_a1,col_a2,col_a3)</span><br><span class="line"><span class="keyword">VALUES</span> (b.col_b1,b.col_b2,b.col_b3)</span><br><span class="line"></span><br><span class="line">eg.</span><br><span class="line"> <span class="keyword">MERGE</span> <span class="keyword">INTO</span> imaa_t a </span><br><span class="line"> <span class="keyword">USING</span> (<span class="keyword">SELECT</span> imaa001,imaa031 <span class="keyword">FROM</span> imaa_lyq_t) b</span><br><span class="line">    <span class="keyword">ON</span> (a.imaa001 <span class="operator">=</span> b.imaa001 <span class="keyword">AND</span> a.imaaent <span class="operator">=</span> <span class="number">2</span>)</span><br><span class="line">  <span class="keyword">WHEN</span> MATCHED <span class="keyword">THEN</span></span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">SET</span> a.imaaud012 <span class="operator">=</span> b.imaa031</span><br><span class="line">  <span class="keyword">WHEN</span> <span class="keyword">NOT</span> MARCHED <span class="keyword">THEN</span></span><br><span class="line"><span class="keyword">INSERT</span> (imaaent,imaa001)</span><br><span class="line"><span class="keyword">VALUES</span> (b.imaaent,b.imaa001)</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="新增临时表"><a href="#新增临时表" class="headerlink" title="新增临时表"></a>新增临时表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">LET l_sql <span class="operator">=</span> &quot; CREATE GLOBAL TEMPORARY TABLE temp_tbl AS</span><br><span class="line">              SELECT * </span><br><span class="line">                FROM table_a</span><br><span class="line">               WHERE 1=0 --无数据临时表</span><br><span class="line">                 AND col_a = &#x27;arg&#x27;</span><br><span class="line">PREPARE create_temp FROM l_sql</span><br><span class="line">EXECUTE create_temp</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="大小写转换"><a href="#大小写转换" class="headerlink" title="大小写转换"></a>大小写转换</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> table_name</span><br><span class="line">   <span class="keyword">SET</span> cola_name <span class="operator">=</span> <span class="built_in">upper</span>(cola_name)</span><br><span class="line">      ,colb_name <span class="operator">=</span> <span class="built_in">lower</span>(colb_name)</span><br><span class="line"> <span class="keyword">WHERE</span> colc_name <span class="operator">=</span> <span class="string">&#x27;arg&#x27;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="LIKE数据筛选"><a href="#LIKE数据筛选" class="headerlink" title="LIKE数据筛选"></a>LIKE数据筛选</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line">  <span class="keyword">FROM</span> <span class="keyword">table</span></span><br><span class="line"> <span class="keyword">WHERE</span> col_a <span class="keyword">LIKE</span> <span class="string">&#x27;%$_20%&#x27;</span> <span class="keyword">ESCAPE</span> <span class="string">&#x27;$&#x27;</span></span><br><span class="line"></span><br><span class="line">筛选出数据含 <span class="operator">*</span>_20<span class="operator">*</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="多选SQL"><a href="#多选SQL" class="headerlink" title="多选SQL"></a>多选SQL</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> (<span class="keyword">CASE</span> col_a <span class="keyword">WHEN</span> <span class="string">&#x27;a&#x27;</span> <span class="keyword">THEN</span> <span class="string">&#x27;A&#x27;</span> <span class="keyword">WHEN</span> <span class="string">&#x27;b&#x27;</span> <span class="keyword">THEN</span> <span class="string">&#x27;B&#x27;</span> <span class="keyword">ELSE</span> <span class="string">&#x27;C&#x27;</span> <span class="keyword">END</span> <span class="keyword">CASE</span>)</span><br><span class="line">  <span class="keyword">FROM</span> <span class="keyword">table</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="REGEXP-LIKE数据筛选"><a href="#REGEXP-LIKE数据筛选" class="headerlink" title="REGEXP_LIKE数据筛选"></a>REGEXP_LIKE数据筛选</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> <span class="keyword">table</span> <span class="keyword">where</span> REGEXP_LIKE(col_a, <span class="string">&#x27;^[56]&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="FLOOR-CEIL"><a href="#FLOOR-CEIL" class="headerlink" title="FLOOR CEIL"></a>FLOOR CEIL</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="built_in">ceil</span>(<span class="number">9.5</span>) <span class="keyword">FROM</span> dual  <span class="operator">-</span><span class="operator">&gt;</span> <span class="number">10</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="built_in">floor</span>(<span class="number">9.5</span>) <span class="keyword">FROM</span> dual <span class="operator">-</span><span class="operator">&gt;</span> <span class="number">9</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ttps://guozenghuang.github.io/2019/06/24/常用SQL语法/" data-id="ckk42argp001e3ouahnc03nvx" data-title="常用SQL语法" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/07/14/Ubuntu%E6%9B%B4%E6%8D%A2%E6%BA%90/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          Linux更换源
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/11/linux%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">linux常用指令</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FineReport/" rel="tag">FineReport</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/" rel="tag">NoSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/" rel="tag">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/v2ray/" rel="tag">v2ray</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" rel="tag">个人简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">正则表达式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CentOS/" style="font-size: 10px;">CentOS</a> <a href="/tags/FineReport/" style="font-size: 10px;">FineReport</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SQL/" style="font-size: 13.33px;">SQL</a> <a href="/tags/Ubuntu/" style="font-size: 20px;">Ubuntu</a> <a href="/tags/git/" style="font-size: 16.67px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 16.67px;">hexo</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/v2ray/" style="font-size: 10px;">v2ray</a> <a href="/tags/vscode/" style="font-size: 10px;">vscode</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">个人简介</a> <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 10px;">正则表达式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/24/MySQL%E4%B9%8BExplain/">MySQL之explain</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">关系型数据库与非关系型数据库(SQL VS NoSQL)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/31/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9B%B8%E5%85%B3/">CentOS服务器相关</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/10/%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8MySQL%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95/">配置远程服务器MySQL问题排查记录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/20/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">nginx反向代理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 guozenghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

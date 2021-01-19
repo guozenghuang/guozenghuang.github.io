@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>linux常用指令 | guozenghuang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="日常开发过程中接触到的linux指令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux常用指令">
+<meta property="og:url" content="ttps://guozenghuang.github.io/2019/06/11/linux常用指令/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="日常开发过程中接触到的linux指令">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="ttps:///images/profile/linux.png">
+<meta property="article:published_time" content="2019-06-11T07:34:46.000Z">
+<meta property="article:modified_time" content="2019-11-22T14:33:18.000Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="ttps:///images/profile/linux.png">
+  
+    <link rel="alternate" href="/atom.xml" title="guozenghuang" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">guozenghuang</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">知识的岛屿越大,无知的海岸线就越长。</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ttps://guozenghuang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-linux常用指令" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/06/11/linux%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/" class="article-date">
+  <time class="dt-published" datetime="2019-06-11T07:34:46.000Z" itemprop="datePublished">2019-06-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      linux常用指令
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/profile/linux.png" alt="linux"></p>
+<h2 id="日常开发过程中接触到的linux指令"><a href="#日常开发过程中接触到的linux指令" class="headerlink" title="日常开发过程中接触到的linux指令"></a>日常开发过程中接触到的linux指令</h2><a id="more"></a>
+
+<hr>
+<h3 id="通用"><a href="#通用" class="headerlink" title="通用"></a>通用</h3><table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">当前目录</td>
+<td align="left">pwd</td>
+</tr>
+<tr>
+<td align="left">根目录</td>
+<td align="left">cd (~)</td>
+</tr>
+<tr>
+<td align="left">切换最近工作目录</td>
+<td align="left">cd -</td>
+</tr>
+<tr>
+<td align="left">自动补全</td>
+<td align="left">tab</td>
+</tr>
+<tr>
+<td align="left">新建文件</td>
+<td align="left">touch (.)隐藏文件</td>
+</tr>
+<tr>
+<td align="left">列出当前目录文件</td>
+<td align="left">ls</td>
+</tr>
+<tr>
+<td align="left">新建目录</td>
+<td align="left">mkdir</td>
+</tr>
+<tr>
+<td align="left">复制</td>
+<td align="left">cp (-i) (-r folder)</td>
+</tr>
+<tr>
+<td align="left">移动</td>
+<td align="left">mv</td>
+</tr>
+<tr>
+<td align="left">树状图</td>
+<td align="left">tree</td>
+</tr>
+<tr>
+<td align="left">搜索</td>
+<td align="left">grep ‘keyword’ *.filename extension</td>
+</tr>
+<tr>
+<td align="left">查看文件内容</td>
+<td align="left">cat (-n 行号)  more</td>
+</tr>
+<tr>
+<td align="left">输出</td>
+<td align="left">&gt; 覆盖 &gt;&gt; 追加</td>
+</tr>
+<tr>
+<td align="left">上传</td>
+<td align="left">rz</td>
+</tr>
+<tr>
+<td align="left">下载</td>
+<td align="left">sz</td>
+</tr>
+<tr>
+<td align="left">变量赋值</td>
+<td align="left">export FGLSERVER=$FGLSERVER:1</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="用户-组相关"><a href="#用户-组相关" class="headerlink" title="用户/组相关"></a>用户/组相关</h3><table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">修改权限</td>
+<td align="left">chmod -/+ rwx file/folder</td>
+</tr>
+<tr>
+<td align="left">添加组</td>
+<td align="left">groupadd groupname</td>
+</tr>
+<tr>
+<td align="left">减少组</td>
+<td align="left">groupdel groupname</td>
+</tr>
+<tr>
+<td align="left">查询组</td>
+<td align="left">cat /etc/group</td>
+</tr>
+<tr>
+<td align="left">修改组</td>
+<td align="left">chgrp groupname file/folder</td>
+</tr>
+<tr>
+<td align="left">新建用户</td>
+<td align="left">useradd username -m(同时创建家目录) -g(指定用户组)</td>
+</tr>
+<tr>
+<td align="left">删除用户</td>
+<td align="left">userdel username -r(同时删除家目录)</td>
+</tr>
+<tr>
+<td align="left">确认用户信息</td>
+<td align="left">cat /etc/passwd</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="远程相关"><a href="#远程相关" class="headerlink" title="远程相关"></a>远程相关</h3><table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">远程管理</td>
+<td align="left">ssh -p 22 user@remote</td>
+</tr>
+<tr>
+<td align="left">远程拷贝</td>
+<td align="left">scp -P 22 user@remote</td>
+</tr>
+<tr>
+<td align="left">免密登录生成密钥对</td>
+<td align="left">ssh-keygen</td>
+</tr>
+<tr>
+<td align="left">上传公钥至服务器</td>
+<td align="left">ssh-copy-id -p port user@remote</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="鼎捷TIPTOP-相关操作指令"><a href="#鼎捷TIPTOP-相关操作指令" class="headerlink" title="鼎捷TIPTOP 相关操作指令"></a>鼎捷TIPTOP 相关操作指令</h3><table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">数据库schema重新生成</td>
+<td align="left">r.s ds(T100) / r.s2 ds(TOPGP)</td>
+</tr>
+<tr>
+<td align="left">复制删除企业</td>
+<td align="left">fglrun ent_tools (需切换到$FBIN/42m目录)</td>
+</tr>
+<tr>
+<td align="left">将4GL文件编译成42m</td>
+<td align="left">r.c2 prog</td>
+</tr>
+<tr>
+<td align="left">将4fd画面档编译成42f</td>
+<td align="left">r.f2 prog 2 (标准p,客制c)</td>
+</tr>
+<tr>
+<td align="left">读取程序连结数据并将42m程序连结至42r</td>
+<td align="left">r.l2 prog</td>
+</tr>
+<tr>
+<td align="left">运行程序</td>
+<td align="left">r.r prog (T100) / r.r2 prog (TOPGP)</td>
+</tr>
+<tr>
+<td align="left">调试程序</td>
+<td align="left">r.d prog (T100) / r.d2 porg (TOPGP)(需切换到对应4gl模组下)</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">追踪日志</td>
+<td align="left">tail -f xxxx.log</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ttps://guozenghuang.github.io/2019/06/11/linux常用指令/" data-id="ckk42argg00113oua1mumdv0c" data-title="linux常用指令" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/" rel="tag">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/06/24/%E5%B8%B8%E7%94%A8SQL%E8%AF%AD%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          常用SQL语法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/06/07/%E8%BF%99%E6%98%AF%E4%B8%80%E7%AF%87markdown%E6%96%87%E7%AB%A0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">这是一篇markdown文章</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FineReport/" rel="tag">FineReport</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/" rel="tag">NoSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/" rel="tag">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/v2ray/" rel="tag">v2ray</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" rel="tag">个人简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">正则表达式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CentOS/" style="font-size: 10px;">CentOS</a> <a href="/tags/FineReport/" style="font-size: 10px;">FineReport</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SQL/" style="font-size: 13.33px;">SQL</a> <a href="/tags/Ubuntu/" style="font-size: 20px;">Ubuntu</a> <a href="/tags/git/" style="font-size: 16.67px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 16.67px;">hexo</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/v2ray/" style="font-size: 10px;">v2ray</a> <a href="/tags/vscode/" style="font-size: 10px;">vscode</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">个人简介</a> <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 10px;">正则表达式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/24/MySQL%E4%B9%8BExplain/">MySQL之explain</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">关系型数据库与非关系型数据库(SQL VS NoSQL)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/31/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9B%B8%E5%85%B3/">CentOS服务器相关</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/10/%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8MySQL%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95/">配置远程服务器MySQL问题排查记录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/20/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">nginx反向代理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 guozenghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

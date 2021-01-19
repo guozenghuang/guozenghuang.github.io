@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>在Ubuntu服务器部署hexo博客 | guozenghuang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Ubuntu服务器部署hexo博客">
+<meta property="og:url" content="ttps://guozenghuang.github.io/2019/09/07/在Ubuntu服务器部署hexo博客/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="ttps:///images/tencent/tencentcloud.jpg">
+<meta property="article:published_time" content="2019-09-07T02:38:43.000Z">
+<meta property="article:modified_time" content="2019-11-05T14:28:14.000Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="git">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="ttps:///images/tencent/tencentcloud.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="guozenghuang" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">guozenghuang</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">知识的岛屿越大,无知的海岸线就越长。</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS 订阅"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="ttps://guozenghuang.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-在Ubuntu服务器部署hexo博客" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/07/%E5%9C%A8Ubuntu%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2hexo%E5%8D%9A%E5%AE%A2/" class="article-date">
+  <time class="dt-published" datetime="2019-09-07T02:38:43.000Z" itemprop="datePublished">2019-09-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      在Ubuntu服务器部署hexo博客
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="/images/tencent/tencentcloud.jpg" alt="tencent"></p>
+<h3 id="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github-page上的hexo博客也一起部署到腾讯云上"><a href="#在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github-page上的hexo博客也一起部署到腾讯云上" class="headerlink" title="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上"></a>在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上</h3><a id="more"></a>
+
+<hr>
+<h4 id="新建远程仓库"><a href="#新建远程仓库" class="headerlink" title="新建远程仓库"></a>新建远程仓库</h4><ul>
+<li>在<code>/var</code>路径下创建repo目录<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir &#x2F;var&#x2F;repo</span><br></pre></td></tr></table></figure></li>
+<li>创建后<code>/var</code>目录下<code>/repo</code>结构如下，可以看到新建的<code>repo</code>目录，对应目录的权限和所有者是root角色<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x  2 root root   4.0K Sep  7 10:07 repo</span><br></pre></td></tr></table></figure></li>
+<li>由于我们推送仓库等都是使用ubuntu或者其他账号，就需要修改对应的目录权限和所有者，并赋予修改权限<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $USER:$USER &#x2F;var&#x2F;repo</span><br><span class="line"></span><br><span class="line">drwxr-xr-x  2 ubuntu ubuntu 4.0K Sep  7 10:07 repo</span><br></pre></td></tr></table></figure></li>
+<li>进入创建好的repo目录，创建git裸仓库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;var&#x2F;repo</span><br><span class="line">git init --bare hexo.git</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h4 id="配置nginx反向代理"><a href="#配置nginx反向代理" class="headerlink" title="配置nginx反向代理"></a>配置nginx反向代理</h4><ul>
+<li>创建<code>/var/www/hexo</code>目录用于nginx<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;var&#x2F;www&#x2F;hexo</span><br><span class="line">(-p代表若上级目录未创建，则一并创建)</span><br></pre></td></tr></table></figure></li>
+<li>同样修改目录权限及所有者<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown $USER:$USER &#x2F;var&#x2F;www&#x2F;hexo</span><br></pre></td></tr></table></figure></li>
+<li>修改nginx配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;default</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server ipv6only&#x3D;on;</span><br><span class="line">    #server_name xx.xx.xx #域名</span><br><span class="line">    root &#x2F;var&#x2F;www&#x2F;hexo;</span><br><span class="line">    index index.html index.htm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>测试nginx配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx -t</span><br><span class="line"></span><br><span class="line">nginx: configuration file &#x2F;etc&#x2F;nginx&#x2F;nginx.conf test is successful</span><br></pre></td></tr></table></figure></li>
+<li>重启nginx<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service nginx restart</span><br></pre></td></tr></table></figure></li>
+<li>此时即可访问站点，但是没主页文件会报错</li>
+</ul>
+<hr>
+<h4 id="配置git钩子"><a href="#配置git钩子" class="headerlink" title="配置git钩子"></a>配置git钩子</h4><ul>
+<li>新建git钩子文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br></pre></td></tr></table></figure></li>
+<li>配置git钩子文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">git --work-tree&#x3D;&#x2F;var&#x2F;www&#x2F;hexo --git-dir&#x3D;&#x2F;var&#x2F;repo&#x2F;hexo.git checkout -f</span><br></pre></td></tr></table></figure></li>
+<li>修改对应的权限归属并赋予执行权限<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo chown $USER:$USER &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br><span class="line">sudo chmod +x &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h4 id="git部署"><a href="#git部署" class="headerlink" title="git部署"></a>git部署</h4><ul>
+<li><p>使用git将hexo生成的博客推送到服务端</p>
+</li>
+<li><p>修改hexo根目录的<code>config.yml</code>文件中<code>Deployment</code>部分如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: 登录角色@服务器ip或域名:端口&#x2F;var&#x2F;repo&#x2F;hexo</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h4 id="hexo推送"><a href="#hexo推送" class="headerlink" title="hexo推送"></a>hexo推送</h4><ul>
+<li>安装hexo包(因我本地有推送到github的仓库，所以我并未执行该步骤)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></li>
+<li>测试部署<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g &amp; hexo d</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>若安装过程中出现git/nginx等未安装可执行如下命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git -y</span><br><span class="line">sudo apt install nginx -y</span><br><span class="line">sudo apt install 缺少软件名 -y</span><br></pre></td></tr></table></figure></li>
+<li>若出现安装软件依赖错误<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">在使用命令sudo apt install curl安装curl时提示如下错误时</span><br><span class="line"></span><br><span class="line">下列软件包有未满足的依赖关系：</span><br><span class="line"> curl : 依赖: libcurl3-gnutls (&#x3D; 7.47.0-1ubuntu2.14) 但是 7.58.0-2ubuntu3.7 正要被安装</span><br><span class="line">E: 无法修正错误，因为您要求某些软件包保持现状，就是它们破坏了软件包间的依赖关系。</span><br><span class="line"></span><br><span class="line">则需要按照提示安装对应版本的libcurl3-gnutls（依据提示）</span><br><span class="line">sudo apt install libcurl3-gnutls&#x3D;7.47.0-1ubuntu2.14</span><br><span class="line"></span><br><span class="line">安装好对应的依赖后再进行前述安装命令即可安装成功</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="ttps://guozenghuang.github.io/2019/09/07/在Ubuntu服务器部署hexo博客/" data-id="ckk42argq001h3oua078qhb7v" data-title="在Ubuntu服务器部署hexo博客" class="article-share-link">分享</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ubuntu/" rel="tag">Ubuntu</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/10/03/python%E5%AD%A6%E4%B9%A0%E6%BA%90%E7%A0%81/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">前一篇</strong>
+      <div class="article-nav-title">
+        
+          python学习源码
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/08/06/%E5%9C%A8Ubuntu%E4%B8%8A%E6%90%AD%E5%BB%BAv2ray%E6%9C%8D%E5%8A%A1%E5%99%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">后一篇</strong>
+      <div class="article-nav-title">在Ubuntu上搭建v2ray服务器</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FineReport/" rel="tag">FineReport</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NoSQL/" rel="tag">NoSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL/" rel="tag">SQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ubuntu/" rel="tag">Ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/" rel="tag">github</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/" rel="tag">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/npm/" rel="tag">npm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/v2ray/" rel="tag">v2ray</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vscode/" rel="tag">vscode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" rel="tag">个人简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="tag">正则表达式</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/CentOS/" style="font-size: 10px;">CentOS</a> <a href="/tags/FineReport/" style="font-size: 10px;">FineReport</a> <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/MySQL/" style="font-size: 16.67px;">MySQL</a> <a href="/tags/NoSQL/" style="font-size: 10px;">NoSQL</a> <a href="/tags/SQL/" style="font-size: 13.33px;">SQL</a> <a href="/tags/Ubuntu/" style="font-size: 20px;">Ubuntu</a> <a href="/tags/git/" style="font-size: 16.67px;">git</a> <a href="/tags/github/" style="font-size: 10px;">github</a> <a href="/tags/hexo/" style="font-size: 16.67px;">hexo</a> <a href="/tags/linux/" style="font-size: 10px;">linux</a> <a href="/tags/markdown/" style="font-size: 10px;">markdown</a> <a href="/tags/nginx/" style="font-size: 10px;">nginx</a> <a href="/tags/npm/" style="font-size: 10px;">npm</a> <a href="/tags/python/" style="font-size: 10px;">python</a> <a href="/tags/v2ray/" style="font-size: 10px;">v2ray</a> <a href="/tags/vscode/" style="font-size: 10px;">vscode</a> <a href="/tags/%E4%B8%AA%E4%BA%BA%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">个人简介</a> <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" style="font-size: 10px;">正则表达式</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">十一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">六月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">五月 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/24/MySQL%E4%B9%8BExplain/">MySQL之explain</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">关系型数据库与非关系型数据库(SQL VS NoSQL)</a>
+          </li>
+        
+          <li>
+            <a href="/2020/01/31/Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9B%B8%E5%85%B3/">CentOS服务器相关</a>
+          </li>
+        
+          <li>
+            <a href="/2019/12/10/%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8MySQL%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5%E8%AE%B0%E5%BD%95/">配置远程服务器MySQL问题排查记录</a>
+          </li>
+        
+          <li>
+            <a href="/2019/11/20/nginx%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/">nginx反向代理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 guozenghuang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
