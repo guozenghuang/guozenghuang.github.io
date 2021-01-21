@@ -9,20 +9,20 @@
   <meta name="description" content="利用vscode维护github搭建的hexo博客，恰逢电脑重装，记录下本次迁移及平时如何维护hexo博客">
 <meta property="og:type" content="article">
 <meta property="og:title" content="hexo迁移及快速维护-优雅地维护hexo（伪）">
-<meta property="og:url" content="https://guozenghuang.gitee.io/blog/2019/07/25/hexo%E8%BF%81%E7%A7%BB%E5%8F%8A%E5%BF%AB%E9%80%9F%E7%BB%B4%E6%8A%A4-%E4%BC%98%E9%9B%85%E5%9C%B0%E7%BB%B4%E6%8A%A4hexo%EF%BC%88%E4%BC%AA%EF%BC%89/index.html">
+<meta property="og:url" content="https://guozenghuang.github.io/2019/07/25/hexo%E8%BF%81%E7%A7%BB%E5%8F%8A%E5%BF%AB%E9%80%9F%E7%BB%B4%E6%8A%A4-%E4%BC%98%E9%9B%85%E5%9C%B0%E7%BB%B4%E6%8A%A4hexo%EF%BC%88%E4%BC%AA%EF%BC%89/index.html">
 <meta property="og:site_name" content="guozenghuang">
 <meta property="og:description" content="利用vscode维护github搭建的hexo博客，恰逢电脑重装，记录下本次迁移及平时如何维护hexo博客">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/vscode_hexo_title.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/SSH_keys.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/ssh_test.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/node_npm_v.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/git_extensions.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/hexo_extensions.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/hexo_install.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/vs_hexo_g_error.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/hexo_install_vs.png">
-<meta property="og:image" content="https://guozenghuang.gitee.io/images/migrate/hexo_error.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/vscode_hexo_title.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/SSH_keys.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/ssh_test.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/node_npm_v.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/git_extensions.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/hexo_extensions.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/hexo_install.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/vs_hexo_g_error.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/hexo_install_vs.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/migrate/hexo_error.png">
 <meta property="article:published_time" content="2019-07-25T13:05:00.000Z">
 <meta property="article:modified_time" content="2020-08-22T09:29:53.144Z">
 <meta property="article:author" content="guozenghuang">
@@ -32,7 +32,7 @@
 <meta property="article:tag" content="npm">
 <meta property="article:tag" content="vscode">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://guozenghuang.gitee.io/images/migrate/vscode_hexo_title.png">
+<meta name="twitter:image" content="https://guozenghuang.github.io/images/migrate/vscode_hexo_title.png">
   
     <link rel="alternate" href="/atom.xml" title="guozenghuang" type="application/atom+xml">
   
@@ -86,7 +86,7 @@
         <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://guozenghuang.gitee.io/blog"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="搜索"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://guozenghuang.github.io"></form>
       </div>
     </div>
   </div>
@@ -194,7 +194,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://guozenghuang.gitee.io/blog/2019/07/25/hexo%E8%BF%81%E7%A7%BB%E5%8F%8A%E5%BF%AB%E9%80%9F%E7%BB%B4%E6%8A%A4-%E4%BC%98%E9%9B%85%E5%9C%B0%E7%BB%B4%E6%8A%A4hexo%EF%BC%88%E4%BC%AA%EF%BC%89/" data-id="ckk45ul0e001194ua4icw2phv" data-title="hexo迁移及快速维护-优雅地维护hexo（伪）" class="article-share-link">分享</a>
+      <a data-url="https://guozenghuang.github.io/2019/07/25/hexo%E8%BF%81%E7%A7%BB%E5%8F%8A%E5%BF%AB%E9%80%9F%E7%BB%B4%E6%8A%A4-%E4%BC%98%E9%9B%85%E5%9C%B0%E7%BB%B4%E6%8A%A4hexo%EF%BC%88%E4%BC%AA%EF%BC%89/" data-id="ckk6cw1pe0012l8uagdt0fb57" data-title="hexo迁移及快速维护-优雅地维护hexo（伪）" class="article-share-link">分享</a>
       
       
       
