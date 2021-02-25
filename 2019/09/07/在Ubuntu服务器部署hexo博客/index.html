@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Ubuntu,hexo,git," />
+  <meta name="keywords" content="Ubuntu,git,hexo," />
 
 
 
@@ -91,8 +91,8 @@
 <meta property="article:modified_time" content="2019-11-05T14:28:14.000Z">
 <meta property="article:author" content="guozenghuang">
 <meta property="article:tag" content="Ubuntu">
-<meta property="article:tag" content="hexo">
 <meta property="article:tag" content="git">
+<meta property="article:tag" content="hexo">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://guozenghuang.github.io/images/tencent/tencentcloud.jpg">
 
@@ -140,7 +140,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.3.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -357,30 +357,55 @@
 
       
         <p><img src="/images/tencent/tencentcloud.jpg" alt="tencent"></p>
-<h3 id="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github-page上的hexo博客也一起部署到腾讯云上"><a href="#在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github-page上的hexo博客也一起部署到腾讯云上" class="headerlink" title="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上"></a>在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上</h3><a id="more"></a>
+<h3 id="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github-page上的hexo博客也一起部署到腾讯云上"><a href="#在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github-page上的hexo博客也一起部署到腾讯云上" class="headerlink" title="在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上"></a>在腾讯云购买的99年付1C1G1M的云主机，恰好将部署在github page上的hexo博客也一起部署到腾讯云上</h3><span id="more"></span>
 
 <hr>
 <h4 id="新建远程仓库"><a href="#新建远程仓库" class="headerlink" title="新建远程仓库"></a>新建远程仓库</h4><ul>
-<li>在<code>/var</code>路径下创建repo目录<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir &#x2F;var&#x2F;repo</span><br></pre></td></tr></table></figure></li>
-<li>创建后<code>/var</code>目录下<code>/repo</code>结构如下，可以看到新建的<code>repo</code>目录，对应目录的权限和所有者是root角色<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x  2 root root   4.0K Sep  7 10:07 repo</span><br></pre></td></tr></table></figure></li>
-<li>由于我们推送仓库等都是使用ubuntu或者其他账号，就需要修改对应的目录权限和所有者，并赋予修改权限<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $USER:$USER &#x2F;var&#x2F;repo</span><br><span class="line"></span><br><span class="line">drwxr-xr-x  2 ubuntu ubuntu 4.0K Sep  7 10:07 repo</span><br></pre></td></tr></table></figure></li>
-<li>进入创建好的repo目录，创建git裸仓库<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;var&#x2F;repo</span><br><span class="line">git init --bare hexo.git</span><br></pre></td></tr></table></figure>
+<li><p>在<code>/var</code>路径下创建repo目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir &#x2F;var&#x2F;repo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建后<code>/var</code>目录下<code>/repo</code>结构如下，可以看到新建的<code>repo</code>目录，对应目录的权限和所有者是root角色</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drwxr-xr-x  2 root root   4.0K Sep  7 10:07 repo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由于我们推送仓库等都是使用ubuntu或者其他账号，就需要修改对应的目录权限和所有者，并赋予修改权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo chown -R $USER:$USER &#x2F;var&#x2F;repo</span><br><span class="line"></span><br><span class="line">drwxr-xr-x  2 ubuntu ubuntu 4.0K Sep  7 10:07 repo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入创建好的repo目录，创建git裸仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;var&#x2F;repo</span><br><span class="line">git init --bare hexo.git</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
 <h4 id="配置nginx反向代理"><a href="#配置nginx反向代理" class="headerlink" title="配置nginx反向代理"></a>配置nginx反向代理</h4><ul>
-<li>创建<code>/var/www/hexo</code>目录用于nginx<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;var&#x2F;www&#x2F;hexo</span><br><span class="line">(-p代表若上级目录未创建，则一并创建)</span><br></pre></td></tr></table></figure></li>
-<li>同样修改目录权限及所有者<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown $USER:$USER &#x2F;var&#x2F;www&#x2F;hexo</span><br></pre></td></tr></table></figure></li>
-<li>修改nginx配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;default</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server ipv6only&#x3D;on;</span><br><span class="line">    #server_name xx.xx.xx #域名</span><br><span class="line">    root &#x2F;var&#x2F;www&#x2F;hexo;</span><br><span class="line">    index index.html index.htm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li>测试nginx配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx -t</span><br><span class="line"></span><br><span class="line">nginx: configuration file &#x2F;etc&#x2F;nginx&#x2F;nginx.conf test is successful</span><br></pre></td></tr></table></figure></li>
-<li>重启nginx<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service nginx restart</span><br></pre></td></tr></table></figure></li>
-<li>此时即可访问站点，但是没主页文件会报错</li>
+<li><p>创建<code>/var/www/hexo</code>目录用于nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p &#x2F;var&#x2F;www&#x2F;hexo</span><br><span class="line">(-p代表若上级目录未创建，则一并创建)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>同样修改目录权限及所有者</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chown $USER:$USER &#x2F;var&#x2F;www&#x2F;hexo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改nginx配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;nginx&#x2F;sites-available&#x2F;default</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server ipv6only&#x3D;on;</span><br><span class="line">    #server_name xx.xx.xx #域名</span><br><span class="line">    root &#x2F;var&#x2F;www&#x2F;hexo;</span><br><span class="line">    index index.html index.htm;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试nginx配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx -t</span><br><span class="line"></span><br><span class="line">nginx: configuration file &#x2F;etc&#x2F;nginx&#x2F;nginx.conf test is successful</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service nginx restart</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时即可访问站点，但是没主页文件会报错</p>
+</li>
 </ul>
 <hr>
 <h4 id="配置git钩子"><a href="#配置git钩子" class="headerlink" title="配置git钩子"></a>配置git钩子</h4><ul>
-<li>新建git钩子文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br></pre></td></tr></table></figure></li>
-<li>配置git钩子文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">git --work-tree&#x3D;&#x2F;var&#x2F;www&#x2F;hexo --git-dir&#x3D;&#x2F;var&#x2F;repo&#x2F;hexo.git checkout -f</span><br></pre></td></tr></table></figure></li>
-<li>修改对应的权限归属并赋予执行权限<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo chown $USER:$USER &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br><span class="line">sudo chmod +x &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br></pre></td></tr></table></figure>
+<li><p>新建git钩子文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置git钩子文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">git --work-tree&#x3D;&#x2F;var&#x2F;www&#x2F;hexo --git-dir&#x3D;&#x2F;var&#x2F;repo&#x2F;hexo.git checkout -f</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改对应的权限归属并赋予执行权限</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo chown $USER:$USER &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br><span class="line">sudo chmod +x &#x2F;var&#x2F;repo&#x2F;hexo.git&#x2F;hooks&#x2F;post-receive</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
@@ -389,18 +414,26 @@
 </li>
 <li><p>修改hexo根目录的<code>config.yml</code>文件中<code>Deployment</code>部分如下</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: 登录角色@服务器ip或域名:端口&#x2F;var&#x2F;repo&#x2F;hexo</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
 <h4 id="hexo推送"><a href="#hexo推送" class="headerlink" title="hexo推送"></a>hexo推送</h4><ul>
-<li>安装hexo包(因我本地有推送到github的仓库，所以我并未执行该步骤)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure></li>
-<li>测试部署<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g &amp; hexo d</span><br></pre></td></tr></table></figure>
+<li><p>安装hexo包(因我本地有推送到github的仓库，所以我并未执行该步骤)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试部署</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g &amp; hexo d</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
-<li>若安装过程中出现git/nginx等未安装可执行如下命令<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git -y</span><br><span class="line">sudo apt install nginx -y</span><br><span class="line">sudo apt install 缺少软件名 -y</span><br></pre></td></tr></table></figure></li>
-<li>若出现安装软件依赖错误<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">在使用命令sudo apt install curl安装curl时提示如下错误时</span><br><span class="line"></span><br><span class="line">下列软件包有未满足的依赖关系：</span><br><span class="line"> curl : 依赖: libcurl3-gnutls (&#x3D; 7.47.0-1ubuntu2.14) 但是 7.58.0-2ubuntu3.7 正要被安装</span><br><span class="line">E: 无法修正错误，因为您要求某些软件包保持现状，就是它们破坏了软件包间的依赖关系。</span><br><span class="line"></span><br><span class="line">则需要按照提示安装对应版本的libcurl3-gnutls（依据提示）</span><br><span class="line">sudo apt install libcurl3-gnutls&#x3D;7.47.0-1ubuntu2.14</span><br><span class="line"></span><br><span class="line">安装好对应的依赖后再进行前述安装命令即可安装成功</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><p>若安装过程中出现git/nginx等未安装可执行如下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git -y</span><br><span class="line">sudo apt install nginx -y</span><br><span class="line">sudo apt install 缺少软件名 -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若出现安装软件依赖错误</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">例：</span><br><span class="line">在使用命令sudo apt install curl安装curl时提示如下错误时</span><br><span class="line"></span><br><span class="line">下列软件包有未满足的依赖关系：</span><br><span class="line"> curl : 依赖: libcurl3-gnutls (&#x3D; 7.47.0-1ubuntu2.14) 但是 7.58.0-2ubuntu3.7 正要被安装</span><br><span class="line">E: 无法修正错误，因为您要求某些软件包保持现状，就是它们破坏了软件包间的依赖关系。</span><br><span class="line"></span><br><span class="line">则需要按照提示安装对应版本的libcurl3-gnutls（依据提示）</span><br><span class="line">sudo apt install libcurl3-gnutls&#x3D;7.47.0-1ubuntu2.14</span><br><span class="line"></span><br><span class="line">安装好对应的依赖后再进行前述安装命令即可安装成功</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
 </ul>
 
       
@@ -421,9 +454,9 @@
           
             <a href="/tags/Ubuntu/" rel="tag"># Ubuntu</a>
           
-            <a href="/tags/hexo/" rel="tag"># hexo</a>
-          
             <a href="/tags/git/" rel="tag"># git</a>
+          
+            <a href="/tags/hexo/" rel="tag"># hexo</a>
           
         </div>
       
@@ -529,7 +562,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -542,7 +575,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

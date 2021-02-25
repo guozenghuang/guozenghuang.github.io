@@ -139,7 +139,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.3.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -356,23 +356,29 @@
 
       
         <p><img src="/images/profile/centos.png" alt="CentOS"></p>
-<h2 id="在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅"><a href="#在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅" class="headerlink" title="在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅"></a>在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅</h2><a id="more"></a>
+<h2 id="在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅"><a href="#在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅" class="headerlink" title="在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅"></a>在使用或部署Linux服务器的过程中，常常会遇到一些配置或者环境的问题，在此做一个记录以便以后查阅</h2><span id="more"></span>
 
 <hr>
 <h3 id="8080-web服务端口开启"><a href="#8080-web服务端口开启" class="headerlink" title="8080 web服务端口开启"></a>8080 web服务端口开启</h3><ul>
 <li><p>使用VirtualBox部署帆软包时遇到8080(tomcat web服务端口)在宿主机一直无法访问的情况，查阅了各相关网站，几乎都是修改iptables来解决。但CentOS 7之后已经开始使用firewall作为防火墙，所以开放8080端口就和以往不一样了，而不是iptables，导致我一直查不到需要修改的文件。</p>
 <ul>
 <li><p>查看防火墙状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --state</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --state</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>若上步处于关闭状态则开启</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start firewalld.service</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl start firewalld.service</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>开启8080端口命令</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --zone&#x3D;public --add-port&#x3D;8080&#x2F;tcp --permanent</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--zone&#x3D;public：表示作用域为公共的</span><br><span class="line">--add-port&#x3D;8080&#x2F;tcp：添加tcp协议的端口8080</span><br><span class="line">--permanent：永久生效，如果没有此参数，则只能维持当前服务生命周期内，重新启动后失效</span><br></pre></td></tr></table></figure></li>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--zone&#x3D;public：表示作用域为公共的</span><br><span class="line">--add-port&#x3D;8080&#x2F;tcp：添加tcp协议的端口8080</span><br><span class="line">--permanent：永久生效，如果没有此参数，则只能维持当前服务生命周期内，重新启动后失效</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>输入命令重启防火墙</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart firewalld.service</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart firewalld.service</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>输入命令重新载入配置</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 </li>
@@ -502,7 +508,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -515,7 +521,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

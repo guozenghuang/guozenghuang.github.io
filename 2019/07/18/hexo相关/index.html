@@ -138,7 +138,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.3.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -355,36 +355,44 @@
 
       
         <p><img src="/images/hexo/hexo.png" alt="hexo"></p>
-<h2 id="hexo搭建博客过程中的一些指令"><a href="#hexo搭建博客过程中的一些指令" class="headerlink" title="hexo搭建博客过程中的一些指令"></a>hexo搭建博客过程中的一些指令</h2><a id="more"></a>
+<h2 id="hexo搭建博客过程中的一些指令"><a href="#hexo搭建博客过程中的一些指令" class="headerlink" title="hexo搭建博客过程中的一些指令"></a>hexo搭建博客过程中的一些指令</h2><span id="more"></span>
 
 <hr>
 <h3 id="阅读全文"><a href="#阅读全文" class="headerlink" title="阅读全文"></a>阅读全文</h3><p>在文章中需要隔断的地方加上 <code>&lt;!--more--&gt;</code></p>
 <hr>
 <h3 id="链接已经写过的文章"><a href="#链接已经写过的文章" class="headerlink" title="链接已经写过的文章"></a>链接已经写过的文章</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% post_link 文章文件名（不要后缀） 文章标题（可选） %&#125;</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h3 id="设置tag"><a href="#设置tag" class="headerlink" title="设置tag"></a>设置tag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tags: [tags1, tags2]</span><br><span class="line">OR</span><br><span class="line">tags:</span><br><span class="line">    - tag1</span><br><span class="line">    - tag2</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h3 id="文章链接图片"><a href="#文章链接图片" class="headerlink" title="文章链接图片"></a>文章链接图片</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">图片文件置于&#x2F;sources&#x2F;images&#x2F;....</span><br><span class="line"></span><br><span class="line">在文章中引用的时候用 ![图片说明](&#x2F;images&#x2F;....)</span><br><span class="line">例如：![SSH_keys](&#x2F;images&#x2F;migrate&#x2F;SSH_keys.png)</span><br><span class="line"></span><br><span class="line">这样写的原因是hexo在生成后，sources下的文件夹会在根目录</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h3 id="点击显示社会主义核心价值观"><a href="#点击显示社会主义核心价值观" class="headerlink" title="点击显示社会主义核心价值观"></a>点击显示社会主义核心价值观</h3><ul>
 <li>在主题路径下<code>/themes/xxxx/source/js/src</code>中增加文件<code>click.js</code></li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># js代码如下</span><br><span class="line">var a_idx &#x3D; 0;</span><br><span class="line">jQuery(document).ready(function ($) &#123;</span><br><span class="line">    $(&quot;body&quot;).click(function (e) &#123;</span><br><span class="line">        var a &#x3D; new Array(&quot;富强&quot;, &quot;民主&quot;, &quot;文明&quot;, &quot;和谐&quot;, &quot;自由&quot;, &quot;平等&quot;, &quot;公正&quot;, &quot;法治&quot;, &quot;爱国&quot;, &quot;敬业&quot;, &quot;诚信&quot;, &quot;友善&quot;);</span><br><span class="line">        var $i &#x3D; $(&quot;&lt;span&#x2F;&gt;&quot;).text(a[a_idx]);</span><br><span class="line">        a_idx &#x3D; (a_idx + 1) % a.length;</span><br><span class="line">        var x &#x3D; e.pageX,</span><br><span class="line">            y &#x3D; e.pageY;</span><br><span class="line">        $i.css(&#123;</span><br><span class="line">            &quot;z-index&quot;: 100000000,</span><br><span class="line">            &quot;top&quot;: y - 20,</span><br><span class="line">            &quot;left&quot;: x,</span><br><span class="line">            &quot;position&quot;: &quot;absolute&quot;,</span><br><span class="line">            &quot;font-weight&quot;: &quot;bold&quot;,</span><br><span class="line">            &quot;color&quot;: &quot;#ff6651&quot;</span><br><span class="line">        &#125;);</span><br><span class="line">        $(&quot;body&quot;).append($i);</span><br><span class="line">        $i.animate(&#123;</span><br><span class="line">            &quot;top&quot;: y - 180,</span><br><span class="line">            &quot;opacity&quot;: 0</span><br><span class="line">        &#125;, 1500, function () &#123;</span><br><span class="line">            $i.remove();</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
 <p>增加文件后在<code>/themes/xxxx/layout/_layout.swig</code>中加入如下代码</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 页面点击社会主义核心价值观 --&gt;</span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;&#x2F;js&#x2F;src&#x2F;click.js&quot;&gt;&lt;&#x2F;script&gt;</span><br></pre></td></tr></table></figure>
+
 <hr>
 <h3 id="增加本地搜索"><a href="#增加本地搜索" class="headerlink" title="增加本地搜索"></a>增加本地搜索</h3><ul>
 <li>安装插件</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npminstall hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>修改站点配置文件</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Search</span><br><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li>修改主题配置文件</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"># Local search</span><br><span class="line"># Dependencies: https:&#x2F;&#x2F;github.com&#x2F;flashlab&#x2F;hexo-generator-search</span><br><span class="line">local_search:</span><br><span class="line">  enable: true # false -&gt; true</span><br><span class="line">  # if auto, trigger search by changing input</span><br><span class="line">  # if manual, trigger search by pressing enter key or search button</span><br><span class="line">  trigger: auto</span><br><span class="line">  # show top n results per article, show all results by setting to -1</span><br><span class="line">  top_n_per_article: 1</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
@@ -507,7 +515,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -520,7 +528,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

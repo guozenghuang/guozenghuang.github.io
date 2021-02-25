@@ -138,7 +138,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.3.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
@@ -355,51 +355,65 @@
 
       
         <p><img src="/images/profile/navicat.png" alt="navicat"></p>
-<h2 id="配置远程服务器MySQL问题小记"><a href="#配置远程服务器MySQL问题小记" class="headerlink" title="配置远程服务器MySQL问题小记"></a>配置远程服务器MySQL问题小记</h2><a id="more"></a>
+<h2 id="配置远程服务器MySQL问题小记"><a href="#配置远程服务器MySQL问题小记" class="headerlink" title="配置远程服务器MySQL问题小记"></a>配置远程服务器MySQL问题小记</h2><span id="more"></span>
 
 <hr>
 <h3 id="can’t-connect-to-MySQL-server-on-‘IP’-10038"><a href="#can’t-connect-to-MySQL-server-on-‘IP’-10038" class="headerlink" title="can’t connect to MySQL server on ‘IP’ (10038)"></a>can’t connect to MySQL server on ‘IP’ (10038)</h3><ul>
 <li><p>检查步骤</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.检查端口是否开放（云服务器安全策略）</span><br><span class="line">2.检查mysqld是否启动</span><br><span class="line">3.检查MySQL bind_address是否开放</span><br><span class="line">4.检查user是否授权</span><br><span class="line">5.检查user是否对外开放</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.检查端口是否开放（云服务器安全策略）</span><br><span class="line">2.检查mysqld是否启动</span><br><span class="line">3.检查MySQL bind_address是否开放</span><br><span class="line">4.检查user是否授权</span><br><span class="line">5.检查user是否对外开放</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>检查MySQL是否启动</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -an | grep 3306</span><br><span class="line">tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改绑定IP（上述端口查看的时候可以看到3306绑定的本地地址，此时需要远程连接，则需要解除地址和端口的绑定）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;mysql&#x2F;mysql.conf.d&#x2F;mysqld.cnf</span><br><span class="line">#bind-address           &#x3D; 127.0.0.1</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo vim &#x2F;etc&#x2F;mysql&#x2F;mysql.conf.d&#x2F;mysqld.cnf</span><br><span class="line">#bind-address           &#x3D; 127.0.0.1</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>修改绑定过后需要重启MySQL，再次查看端口状态如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -an|grep 3306</span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -an|grep 3306</span><br><span class="line">tcp6       0      0 :::3306                 :::*                    LISTEN</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>修改host</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">USE mysql;</span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">user</span> <span class="keyword">SET</span> host <span class="operator">=</span> <span class="string">&#x27;%&#x27;</span> <span class="keyword">WHERE</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">修改mysql库的<span class="keyword">user</span>表，将host项，从localhost改为<span class="operator">%</span>。<span class="operator">%</span>这里表示的是允许任意host访问，如果只允许某一个ip访问，则可改为相应的ip，比如可以将localhost改为<span class="number">192.168</span><span class="number">.1</span><span class="number">.123</span>，这表示只允许局域网的<span class="number">192.168</span><span class="number">.1</span><span class="number">.123</span>这个ip远程访问mysql。</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">USE mysql;</span><br><span class="line"><span class="keyword">UPDATE</span> <span class="keyword">user</span> <span class="keyword">SET</span> host <span class="operator">=</span> <span class="string">&#x27;%&#x27;</span> <span class="keyword">WHERE</span> <span class="keyword">user</span> <span class="operator">=</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">修改mysql库的<span class="keyword">user</span>表，将host项，从localhost改为<span class="operator">%</span>。<span class="operator">%</span>这里表示的是允许任意host访问，如果只允许某一个ip访问，则可改为相应的ip，比如可以将localhost改为<span class="number">192.168</span><span class="number">.1</span><span class="number">.123</span>，这表示只允许局域网的<span class="number">192.168</span><span class="number">.1</span><span class="number">.123</span>这个ip远程访问mysql。</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>更改数据库用户权限</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> root@<span class="operator">%</span> identified <span class="keyword">by</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> 权限<span class="number">1</span>,权限<span class="number">2</span>,…权限n <span class="keyword">on</span> 数据库名称.表名称 <span class="keyword">to</span> 用户名@用户地址 identified <span class="keyword">by</span> ‘连接口令’;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> root@<span class="operator">%</span> identified <span class="keyword">by</span> <span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> 权限<span class="number">1</span>,权限<span class="number">2</span>,…权限n <span class="keyword">on</span> 数据库名称.表名称 <span class="keyword">to</span> 用户名@用户地址 identified <span class="keyword">by</span> ‘连接口令’;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>刷新权限</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
 <h3 id="1251-client-does-not-support-Navicat-for-MySQL"><a href="#1251-client-does-not-support-Navicat-for-MySQL" class="headerlink" title="1251 client does not support(Navicat for MySQL)"></a>1251 client does not support(Navicat for MySQL)</h3>  <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> host,<span class="keyword">user</span>,plugin,authentication_string <span class="keyword">from</span> mysql.user;</span><br><span class="line"><span class="operator">+</span><span class="comment">-----------+------------------+-----------------------+-------------------------------------------+</span></span><br><span class="line"><span class="operator">|</span> host      <span class="operator">|</span> <span class="keyword">user</span>             <span class="operator">|</span> plugin                <span class="operator">|</span> authentication_string                     <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-----------+------------------+-----------------------+-------------------------------------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="operator">%</span>         <span class="operator">|</span> root             <span class="operator">|</span> auth_socket           <span class="operator">|</span>                                           <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> localhost <span class="operator">|</span> mysql.session    <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span>THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> localhost <span class="operator">|</span> mysql.sys        <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span>THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> localhost <span class="operator">|</span> debian<span class="operator">-</span>sys<span class="operator">-</span>maint <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span><span class="number">9336</span>B9DC48B348AD570B3B0F0BD47FE69AA08329 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-----------+------------------+-----------------------+-------------------------------------------+</span></span><br></pre></td></tr></table></figure>
+
 <ul>
 <li><p>备注：host为 % 表示不限制ip   localhost表示本机使用    plugin非mysql_native_password 则需要修改密码</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">&#x27;newpasswd&#x27;</span></span><br></pre></td></tr></table></figure>
+
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql<span class="operator">&gt;</span> <span class="keyword">select</span> host,<span class="keyword">user</span>,plugin,authentication_string <span class="keyword">from</span> mysql.user;</span><br><span class="line"><span class="operator">+</span><span class="comment">-----------+------------------+-----------------------+-------------------------------------------+</span></span><br><span class="line"><span class="operator">|</span> host      <span class="operator">|</span> <span class="keyword">user</span>             <span class="operator">|</span> plugin                <span class="operator">|</span> authentication_string                     <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-----------+------------------+-----------------------+-------------------------------------------+</span></span><br><span class="line"><span class="operator">|</span> <span class="operator">%</span>         <span class="operator">|</span> root             <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span>E74858DB86EBA20BC33D0AECAE8A8108C56B17FA <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> localhost <span class="operator">|</span> mysql.session    <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span>THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> localhost <span class="operator">|</span> mysql.sys        <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span>THISISNOTAVALIDPASSWORDTHATCANBEUSEDHERE <span class="operator">|</span></span><br><span class="line"><span class="operator">|</span> localhost <span class="operator">|</span> debian<span class="operator">-</span>sys<span class="operator">-</span>maint <span class="operator">|</span> mysql_native_password <span class="operator">|</span> <span class="operator">*</span><span class="number">9336</span>B9DC48B348AD570B3B0F0BD47FE69AA08329 <span class="operator">|</span></span><br><span class="line"><span class="operator">+</span><span class="comment">-----------+------------------+-----------------------+-------------------------------------------+</span></span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
 <h3 id="MySQL重装"><a href="#MySQL重装" class="headerlink" title="MySQL重装"></a>MySQL重装</h3><ul>
 <li><p>卸载(自动卸载mysql(包括server和client))</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get autoremove mysql* --purge</span><br><span class="line">sudo apt-get remove apparmor</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get autoremove mysql* --purge</span><br><span class="line">sudo apt-get remove apparmor</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>安装MySQL</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install mysql-server</span><br></pre></td></tr></table></figure>
+
 </li>
 </ul>
 <hr>
 <h3 id="新装MySQL设置"><a href="#新装MySQL设置" class="headerlink" title="新装MySQL设置"></a>新装MySQL设置</h3><ul>
 <li><p>启动MySQL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service mysqld start</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service mysqld start</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>获取root默认密码</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo grep &#39;temporary password&#39; &#x2F;var&#x2F;log&#x2F;mysqld.log</span><br><span class="line">OR</span><br><span class="line">sudo cat &#x2F;var&#x2F;log&#x2F;mysqld.log | grep &#39;temporary password&#39;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo grep &#39;temporary password&#39; &#x2F;var&#x2F;log&#x2F;mysqld.log</span><br><span class="line">OR</span><br><span class="line">sudo cat &#x2F;var&#x2F;log&#x2F;mysqld.log | grep &#39;temporary password&#39;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>登录MySQL</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mysql -uroot -p(前述获取的默认密码)</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mysql -uroot -p(前述获取的默认密码)</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>修改root密码</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;大写小写数字&#x27;</span>;</span><br></pre></td></tr></table></figure></li>
 </ul>
@@ -526,7 +540,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -539,7 +553,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>

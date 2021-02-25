@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/gg.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/gg.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/gg.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/gg.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Oracle," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Oracle表结构优化之分区交换">
+<meta property="og:url" content="https://guozenghuang.github.io/2020/08/11/Oracle%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96%E4%B9%8B%E5%88%86%E5%8C%BA%E5%8C%96%E6%94%B9%E9%80%A0/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guozenghuang.github.io/images/profile/exchange-partition.png">
+<meta property="article:published_time" content="2020-08-11T09:04:27.000Z">
+<meta property="article:modified_time" content="2021-02-24T16:33:06.929Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="Oracle">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guozenghuang.github.io/images/profile/exchange-partition.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://guozenghuang.github.io/2020/08/11/Oracle大表优化之分区化改造/"/>
+
+
+
+
+
+  <title>Oracle表结构优化之分区交换 | guozenghuang</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">guozenghuang</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">知识的岛屿越大,无知的海岸线就越长。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a target="_blank" href="https://github.com/guozenghuang" rel="section noopener">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-mail">
+          <a href="mailto:guozh94@outlook.com" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-envelope"></i> <br />
+            
+            Mail
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://guozenghuang.github.io/2020/08/11/Oracle%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96%E4%B9%8B%E5%88%86%E5%8C%BA%E5%8C%96%E6%94%B9%E9%80%A0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/gg.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="guozenghuang">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Oracle表结构优化之分区交换</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-11T17:04:27+08:00">
+                2020-08-11
+              </time>
+            
+
+            
+              <span class="post-meta-divider">|</span>
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-check-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Post modified&#58;</span>
+              
+              <time title="Post modified" itemprop="dateModified" datetime="2021-02-25T00:33:06+08:00">
+                2021-02-25
+              </time>
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="/images/profile/exchange-partition.png" alt="exchange-partition"></p>
+<h2 id="海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造"><a href="#海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造" class="headerlink" title="海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造"></a>海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造</h2><span id="more"></span>
+
+
+
+<h3 id="分区改造整体流程"><a href="#分区改造整体流程" class="headerlink" title="分区改造整体流程"></a>分区改造整体流程</h3><ol>
+<li><p>创建目标表的分区结构表<code>target_partition_table</code>，以承接新到数据</p>
+</li>
+<li><p>目标表<code>target_table</code>切换至<code>bak_table</code>，目标分区结构表<code>target_partition_table</code>切换至目标表<code>target_table</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#AB表切换方式，切表保证生产正常插入</span><br><span class="line">target_table -&gt; target_bak</span><br><span class="line">target_partition_table - &gt; target_table</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建分区表<code>t_par</code>，带上<code>target_bak</code>数据</p>
+</li>
+<li><p>创建分区交换中间表<code>t_ex</code>，用于分区交换数据中间承接</p>
+</li>
+<li><p>分区交换，<code>t_par</code>交换数据至<code>t_ex</code>，<code>t_ex</code>交换数据至<code>t_target_table</code></p>
+</li>
+<li><p>最后分区数据回补</p>
+</li>
+<li><p>确认索引状态，重建索引</p>
+</li>
+<li><p>收集统计信息</p>
+</li>
+</ol>
+<p><strong>注1：以上流程对存库有高要求，但查库要求不高的场景可用，若有存查均有要求，则需要再使用中间表甚至物化视图来处理</strong></p>
+<p><strong>注2：若有查库要求，可以优化交换过程表的索引，以免索引失效导致慢SQL</strong></p>
+<h3 id="改造范例"><a href="#改造范例" class="headerlink" title="改造范例"></a>改造范例</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--假定操作时间是20200804，仅保留8月数据</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--创建目标表分区表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> T_P NOLOGGING</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span>(STM_TMS)</span><br><span class="line">(</span><br><span class="line"><span class="keyword">PARTITION</span> P20200801 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200802&#x27;</span>),</span><br><span class="line"><span class="keyword">PARTITION</span> P20200802 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200803&#x27;</span>),</span><br><span class="line"><span class="keyword">PARTITION</span> P20200803 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200804&#x27;</span>)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">AS</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> T <span class="keyword">WHERE</span> <span class="number">1</span> <span class="operator">=</span> <span class="number">2</span> ;</span><br><span class="line"></span><br><span class="line"><span class="comment">--创建索引</span></span><br><span class="line"><span class="keyword">CREATE</span> INDEX idx_t_p <span class="keyword">ON</span> T_P (id) <span class="keyword">LOCAL</span> NOLOGGING;</span><br><span class="line">COMMENT <span class="keyword">ON</span> <span class="keyword">COLUMN</span> T_P.id <span class="keyword">IS</span> <span class="string">&#x27;ID&#x27;</span>;</span><br><span class="line">COMMENT <span class="keyword">ON</span> <span class="keyword">TABLE</span> T_P <span class="keyword">is</span> <span class="string">&#x27;TABLE&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">--AB表切换</span></span><br><span class="line">RENAME T   <span class="keyword">TO</span> T_bak;</span><br><span class="line">RENAME T_P <span class="keyword">TO</span> T;</span><br><span class="line"></span><br><span class="line"><span class="comment">--创建分区交换PAR表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> T_PAR nologging</span><br><span class="line"><span class="keyword">PARTITION</span> <span class="keyword">BY</span> <span class="keyword">RANGE</span>(STM_TMS)</span><br><span class="line">(</span><br><span class="line"><span class="keyword">PARTITION</span> P20200731 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200801&#x27;</span>), </span><br><span class="line"><span class="comment">--避免STM_TMS和ID后缀不一致的数据</span></span><br><span class="line"><span class="keyword">PARTITION</span> P20200801 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200802&#x27;</span>),</span><br><span class="line"><span class="keyword">PARTITION</span> P20200802 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200803&#x27;</span>),</span><br><span class="line"><span class="keyword">PARTITION</span> P20200803 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200804&#x27;</span>),</span><br><span class="line"><span class="keyword">PARTITION</span> P20200804 <span class="keyword">VALUES</span> LESS THAN (<span class="string">&#x27;20200805&#x27;</span>)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">AS</span> </span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span></span><br><span class="line"><span class="comment">--SELECT /*+ PARALLEL(4) */ *</span></span><br><span class="line">  <span class="keyword">FROM</span> T_bak</span><br><span class="line"> <span class="keyword">WHERE</span> (id <span class="keyword">LIKE</span> <span class="string">&#x27;A%&#x27;</span> <span class="keyword">AND</span> id <span class="operator">&gt;</span> <span class="string">&#x27;A&#x27;</span><span class="operator">||</span><span class="string">&#x27;20200801&#x27;</span>)</span><br><span class="line">    <span class="keyword">OR</span> (id <span class="keyword">LIKE</span> <span class="string">&#x27;B%&#x27;</span> <span class="keyword">AND</span> id <span class="operator">&gt;</span> <span class="string">&#x27;B&#x27;</span><span class="operator">||</span><span class="string">&#x27;20200801&#x27;</span>);</span><br><span class="line"><span class="comment">--explain : index range scan</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">若不想要分区交换后索引失效，此时需要创建T_PAR的索引与目标表一致</span></span><br><span class="line"><span class="comment">CREATE INDEX idx_t_par ON T_PAR (id) LOCAL NOLOGGING;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--分区交换中间表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> T_EX</span><br><span class="line"><span class="keyword">AS</span> <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> T_BAK <span class="keyword">WHERE</span> <span class="number">1</span><span class="operator">=</span><span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">若不想要分区交换后索引失效，此时需要创建T_PAR的索引与目标表一致</span></span><br><span class="line"><span class="comment">CREATE INDEX idx_t_ex ON T_EX (id) LOCAL NOLOGGING;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--分区交换</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T_PAR EXCHANGE <span class="keyword">PARTITION</span> P20200801 <span class="keyword">WITH</span> <span class="keyword">TABLE</span> T_EX <span class="comment">--INCLUDING INDEXES;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T     EXCHANGE <span class="keyword">PARTITION</span> P20200801 <span class="keyword">WITH</span> <span class="keyword">TABLE</span> T_EX <span class="comment">--INCLUDING INDEXES;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T_PAR EXCHANGE <span class="keyword">PARTITION</span> P20200802 <span class="keyword">WITH</span> <span class="keyword">TABLE</span> T_EX <span class="comment">--INCLUDING INDEXES;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T     EXCHANGE <span class="keyword">PARTITION</span> P20200802 <span class="keyword">WITH</span> <span class="keyword">TABLE</span> T_EX <span class="comment">--INCLUDING INDEXES;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T_PAR EXCHANGE <span class="keyword">PARTITION</span> P20200803 <span class="keyword">WITH</span> <span class="keyword">TABLE</span> T_EX <span class="comment">--INCLUDING INDEXES;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> T     EXCHANGE <span class="keyword">PARTITION</span> P20200803 <span class="keyword">WITH</span> <span class="keyword">TABLE</span> T_EX <span class="comment">--INCLUDING INDEXES;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--当日分区数据回补</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> T</span><br><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> T_PAR <span class="keyword">PARTITION</span> (P20200804);</span><br><span class="line"></span><br><span class="line"><span class="comment">--索引状态检查</span></span><br><span class="line"><span class="keyword">SELECT</span> INDEX_NAME,PARTITION_NAME,STATUS</span><br><span class="line">  <span class="keyword">FROM</span> USER_IND_PARTITIONS</span><br><span class="line"> <span class="keyword">WHERE</span> STATUS<span class="operator">=</span><span class="string">&#x27;UNUSABLE&#x27;</span></span><br><span class="line"> <span class="keyword">UNION</span></span><br><span class="line"><span class="keyword">SELECT</span> INDEX_NAME,<span class="string">&#x27;&#x27;</span>,STSTUS</span><br><span class="line">  <span class="keyword">FROM</span> USER_INDEXES</span><br><span class="line"> <span class="keyword">WHERE</span> STATUS<span class="operator">=</span><span class="string">&#x27;UNUSABLE&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--重建索引</span></span><br><span class="line"><span class="comment">--若前述交换过程中的索引结构不一致或交换中未使用 [INCLUDING INDEXES] 参数，则分区索引会失效，此时就需要进行索引重建</span></span><br><span class="line"><span class="keyword">ALTER</span> INDEX IDX_T REBUILD <span class="keyword">PARTITION</span> P20200801;</span><br><span class="line"><span class="keyword">ALTER</span> INDEX IDX_T REBUILD <span class="keyword">PARTITION</span> P20200802;</span><br><span class="line"><span class="keyword">ALTER</span> INDEX IDX_T REBUILD <span class="keyword">PARTITION</span> P20200803;</span><br><span class="line"></span><br><span class="line"><span class="comment">--中间表删除</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> T_PAR PURGE;</span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> T_EX  PURGE;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="回滚范例"><a href="#回滚范例" class="headerlink" title="回滚范例"></a>回滚范例</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--操作过程中需要回滚</span></span><br><span class="line"></span><br><span class="line"><span class="comment">--BAK表还原</span></span><br><span class="line">RENAME T     <span class="keyword">TO</span> T_BAK_NEW;</span><br><span class="line">RENAME T_BAK <span class="keyword">TO</span> T;</span><br><span class="line"></span><br><span class="line"><span class="comment">--数据回补</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> T <span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> T_BAK_NEW;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ul>
+<li>分区后便于依时间进行数据归档，效率远远优于<code>INSERT+DELETE</code>，对于归档使用的表也可以直接进行分区交换</li>
+<li>减少对实时交易的影响（例如仅库存的表则仅会小概率发生切表过程中的<code>NOT EXISTS</code>）</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>操作过程中，<code>T_PAR表</code>占用与<code>T表</code>存储空间相当（与留存数据时间有关）</li>
+</ul>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>目标表分区使用定时任务进行分区创建（例如：调度 <code>shell -&gt; psql -&gt; PROCEDURE</code>，<code>ORACLE JOBS -&gt;PROCEDURE</code>）</li>
+<li>注意索引失效问题</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Oracle/" rel="tag"># Oracle</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/24/MySQL%E4%B9%8BExplain/" rel="next" title="MySQL之explain">
+                <i class="fa fa-chevron-left"></i> MySQL之explain
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/gg.png"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%B7%E9%87%8F%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%98%93%E7%B3%BB%E7%BB%9F%E4%B8%AD%EF%BC%8C%E6%95%B0%E6%8D%AE%E9%9A%8F%E7%9D%80%E4%BA%A4%E6%98%93%E7%9A%84%E5%A2%9E%E5%A4%9A%E8%80%8C%E5%AF%BC%E8%87%B4%E6%95%B0%E6%8D%AE%E8%A1%A8%E8%B6%8A%E6%9D%A5%E8%B6%8A%E5%BA%9E%E5%A4%A7%EF%BC%8C%E8%80%8C%E7%BC%BA%E4%B9%8F%E5%89%8D%E7%9E%BB%E8%AE%BE%E8%AE%A1%E7%9A%84%E8%A1%A8%E7%BB%93%E6%9E%84%E5%8F%88%E9%9C%80%E8%A6%81%E4%BC%98%E5%8C%96%E4%BB%A5%E6%8F%90%E5%8D%87CRUD%E7%9A%84%E6%80%A7%E8%83%BD%EF%BC%8C%E6%AD%A4%E6%97%B6%E5%88%86%E5%8C%BA%E4%BA%A4%E6%8D%A2%E5%8F%AF%E4%BB%A5%E6%9C%80%E5%B0%8F%E9%99%90%E5%BA%A6%E5%BD%B1%E5%93%8D%E8%81%94%E6%9C%BA%E4%BA%A4%E6%98%93%E7%9A%84%E6%83%85%E5%86%B5%E4%B8%8B%E8%BF%9B%E8%A1%8C%E5%A4%A7%E8%A1%A8%E6%94%B9%E9%80%A0"><span class="nav-number">1.</span> <span class="nav-text">海量数据交易系统中，数据随着交易的增多而导致数据表越来越庞大，而缺乏前瞻设计的表结构又需要优化以提升CRUD的性能，此时分区交换可以最小限度影响联机交易的情况下进行大表改造</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E6%94%B9%E9%80%A0%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">分区改造整体流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E9%80%A0%E8%8C%83%E4%BE%8B"><span class="nav-number">1.2.</span> <span class="nav-text">改造范例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E6%BB%9A%E8%8C%83%E4%BE%8B"><span class="nav-number">1.3.</span> <span class="nav-text">回滚范例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">1.4.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">1.5.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.6.</span> <span class="nav-text">注意事项</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guozenghuang</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
