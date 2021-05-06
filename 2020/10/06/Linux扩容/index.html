@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/gg.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/gg.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/gg.png">
+  <link rel="mask-icon" href="/images/gg.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"guozenghuang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux磁盘扩容">
+<meta property="og:url" content="https://guozenghuang.github.io/2020/10/06/Linux%E6%89%A9%E5%AE%B9/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://guozenghuang.github.io/images/profile/linux_extend.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/raw.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/10G.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/fdisk.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/fdisk_after.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/pvcreate.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/vgdisplay.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/fdisk_after.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/lvextend.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/xfs_growfs.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/xfs_growfs.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/sdb.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/fdisk_sdb.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/fdisk_sdb_after.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/mkfs.png">
+<meta property="og:image" content="https://guozenghuang.github.io/images/linux_extend/sdb_df.png">
+<meta property="article:published_time" content="2020-10-06T05:02:54.000Z">
+<meta property="article:modified_time" content="2020-10-06T05:02:54.000Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="磁盘扩容">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://guozenghuang.github.io/images/profile/linux_extend.png">
+
+<link rel="canonical" href="https://guozenghuang.github.io/2020/10/06/Linux%E6%89%A9%E5%AE%B9/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux磁盘扩容 | guozenghuang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">guozenghuang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">知识的岛屿越大,无知的海岸线就越长。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-github">
+
+    <a href="https://github.com/guozenghuang" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+
+  </li>
+        <li class="menu-item menu-item-mail">
+
+    <a href="mailto:guozh94@outlook.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>Mail</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://guozenghuang.github.io/2020/10/06/Linux%E6%89%A9%E5%AE%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="guozenghuang">
+      <meta itemprop="description" content="一个94年程序员的个人学习小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="guozenghuang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux磁盘扩容
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-06 13:02:54" itemprop="dateCreated datePublished" datetime="2020-10-06T13:02:54+08:00">2020-10-06</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/images/profile/linux_extend.png" alt="linux_extend"></p>
+<h2 id="Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载"><a href="#Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载" class="headerlink" title="Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载"></a>Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载</h2><span id="more"></span>
+
+<h3 id="磁盘扩容"><a href="#磁盘扩容" class="headerlink" title="磁盘扩容"></a>磁盘扩容</h3><ol>
+<li>磁盘容量查看 <code>fdisk -l</code>，总容量为<code>42.9G</code></li>
+</ol>
+<p><img src="/images/linux_extend/raw.png" alt="raw"></p>
+<ol start="2">
+<li><p>外部磁盘扩容后的空间 <code>fdisk -l</code>，总容量为<code>53.7G</code>，此时扩容的容量并未进行分区创建。</p>
+<ul>
+<li><code>/dev/sda</code>代表一块硬盘，其中<code>/dev/sda1</code> <code>/dev/sda2</code>可以理解为该硬盘分了两个区，分别为1，2。</li>
+</ul>
+</li>
+</ol>
+<p><img src="/images/linux_extend/10G.png" alt="10G"></p>
+<ol start="3">
+<li><p>进行分区的创建</p>
+<ol>
+<li><code>fdisk /dev/sda</code> 表示对磁盘进行分区管理</li>
+<li><code>n</code> 代表新增一个分区</li>
+<li><code>p</code> 代表主分区</li>
+<li><code>enter</code> 代表选择默认的分区号</li>
+<li><code>enter</code> 代表选择分区的起始扇区</li>
+<li><code>enter</code> 代表选择分区的结束扇区</li>
+<li><code>t</code> 代表修改分区信息</li>
+<li><code>enter</code> 代表选择默认的分区号</li>
+<li><code>8e</code> 代表分区类型lvm</li>
+<li><code>w</code> 代表将分区的信息写入</li>
+</ol>
+</li>
+</ol>
+<p><img src="/images/linux_extend/fdisk.png" alt="fdisk"></p>
+<ol start="4">
+<li><p>重启<code>init 6 / reboot -h now</code></p>
+<ul>
+<li>此时可看到新增的分区<code>/dev/sda3</code></li>
+</ul>
+</li>
+</ol>
+<p><img src="/images/linux_extend/fdisk_after.png" alt="fdisk_after"></p>
+<ol start="5">
+<li>初始化分区<code>pvcreate /dev/sda3</code></li>
+</ol>
+<p><img src="/images/linux_extend/pvcreate.png" alt="pvcreate"></p>
+<ol start="6">
+<li><p>将<code>/dev/sda3</code>加入卷组</p>
+<p> <code>VG Name</code> = <code>centos</code></p>
+</li>
+</ol>
+<p><img src="/images/linux_extend/vgdisplay.png" alt="vgdisplay"></p>
+<ol start="7">
+<li><p>确定逻辑卷名称，并扩展逻辑卷大小<code>lvextend</code></p>
+<ul>
+<li>逻辑卷名称为<code>/dev/mapper/centos-root</code></li>
+</ul>
+</li>
+</ol>
+<p><img src="/images/linux_extend/fdisk_after.png" alt="fdisk_after"></p>
+<p><img src="/images/linux_extend/lvextend.png" alt="lvextend"></p>
+<ol start="8">
+<li>重新调整卷逻辑大小生效<code>xfs_growfs</code></li>
+</ol>
+<p><img src="/images/linux_extend/xfs_growfs.png" alt="xfs_growfs"></p>
+<ol start="9">
+<li>最终结果</li>
+</ol>
+<p><img src="/images/linux_extend/xfs_growfs.png" alt="xfs_growfs"></p>
+<hr>
+<h3 id="增加磁盘并分区"><a href="#增加磁盘并分区" class="headerlink" title="增加磁盘并分区"></a>增加磁盘并分区</h3><ol>
+<li>磁盘容量查看 <code>fdisk -l</code>，新挂载磁盘为<code>/dev/sdb</code></li>
+</ol>
+<p><img src="/images/linux_extend/sdb.png" alt="sdb"></p>
+<ol start="2">
+<li>进行分区的创建</li>
+</ol>
+<p><img src="/images/linux_extend/fdisk_sdb.png" alt="fdisk_sdb"></p>
+<ol start="3">
+<li>分区创建后确认</li>
+</ol>
+<p><img src="/images/linux_extend/fdisk_sdb_after.png" alt="fdisk_sdb_after"></p>
+<ol start="4">
+<li>格式化分区<code>mkfs</code></li>
+</ol>
+<p><img src="/images/linux_extend/mkfs.png" alt="mkfs"></p>
+<ol start="5">
+<li><p>挂载分区<code>mount -t ext4 /dev/sdb1 /disk02</code></p>
+</li>
+<li><p>查看磁盘挂载情况</p>
+</li>
+</ol>
+<p><img src="/images/linux_extend/sdb_df.png" alt="sdb_df"></p>
+<ol start="7">
+<li>挂载磁盘设置开机启动<code>echo &quot;/dev/sdb1 /disk02 ext4 defaults 0 0&quot; &gt;&gt; /etc/fstab</code></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9/" rel="tag"># 磁盘扩容</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/11/Oracle%E5%A4%A7%E8%A1%A8%E4%BC%98%E5%8C%96%E4%B9%8B%E5%88%86%E5%8C%BA%E5%8C%96%E6%94%B9%E9%80%A0/" rel="prev" title="Oracle表结构优化之分区交换">
+      <i class="fa fa-chevron-left"></i> Oracle表结构优化之分区交换
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E7%A3%81%E7%9B%98%E5%AE%B9%E9%87%8F%E6%89%A9%E5%AE%B9%E6%96%B9%E5%BC%8F%E8%AE%B0%E5%BD%95%EF%BC%9A1%E3%80%81%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9%EF%BC%9B2%E3%80%81%E6%B7%BB%E5%8A%A0%E7%A1%AC%E7%9B%98%E5%B9%B6%E6%8C%82%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">Linux磁盘容量扩容方式记录：1、磁盘扩容；2、添加硬盘并挂载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%89%A9%E5%AE%B9"><span class="nav-number">1.1.</span> <span class="nav-text">磁盘扩容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E7%A3%81%E7%9B%98%E5%B9%B6%E5%88%86%E5%8C%BA"><span class="nav-number">1.2.</span> <span class="nav-text">增加磁盘并分区</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">guozenghuang</p>
+  <div class="site-description" itemprop="description">一个94年程序员的个人学习小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">闽ICP备19024033号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guozenghuang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
