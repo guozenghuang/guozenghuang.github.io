@@ -17,26 +17,26 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"guozenghuang.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"www.941024.xyz","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="SQL : RDBMS 关系型数据库管理系统；NoSQL : No Only SQL 非关系型的数据库 “不仅仅是SQL”">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关系型数据库与非关系型数据库(SQL VS NoSQL)">
-<meta property="og:url" content="https://guozenghuang.github.io/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/index.html">
+<meta property="og:url" content="https://www.941024.xyz/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/index.html">
 <meta property="og:site_name" content="guozenghuang">
 <meta property="og:description" content="SQL : RDBMS 关系型数据库管理系统；NoSQL : No Only SQL 非关系型的数据库 “不仅仅是SQL”">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://guozenghuang.github.io/images/profile/SQLNoSQL.png">
+<meta property="og:image" content="https://www.941024.xyz/images/profile/SQLNoSQL.png">
 <meta property="article:published_time" content="2020-02-10T14:28:16.000Z">
-<meta property="article:modified_time" content="2020-05-03T08:55:04.566Z">
+<meta property="article:modified_time" content="2021-05-11T13:36:16.751Z">
 <meta property="article:author" content="guozenghuang">
 <meta property="article:tag" content="SQL">
 <meta property="article:tag" content="NoSQL">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://guozenghuang.github.io/images/profile/SQLNoSQL.png">
+<meta name="twitter:image" content="https://www.941024.xyz/images/profile/SQLNoSQL.png">
 
-<link rel="canonical" href="https://guozenghuang.github.io/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">
+<link rel="canonical" href="https://www.941024.xyz/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">
 
 
 <script id="page-configurations">
@@ -175,7 +175,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://guozenghuang.github.io/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">
+    <link itemprop="mainEntityOfPage" href="https://www.941024.xyz/2020/02/10/%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%8E%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93(SQL%20VS%20NoSQL)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -205,7 +205,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-03 16:55:04" itemprop="dateModified" datetime="2020-05-03T16:55:04+08:00">2020-05-03</time>
+                <time title="修改时间：2021-05-11 21:36:16" itemprop="dateModified" datetime="2021-05-11T21:36:16+08:00">2021-05-11</time>
               </span>
 
           
@@ -222,6 +222,7 @@
         <p><img src="/images/profile/SQLNoSQL.png" alt="SQL NoSQL"></p>
 <h2 id="SQL-RDBMS-关系型数据库管理系统；NoSQL-No-Only-SQL-非关系型的数据库-“不仅仅是SQL”"><a href="#SQL-RDBMS-关系型数据库管理系统；NoSQL-No-Only-SQL-非关系型的数据库-“不仅仅是SQL”" class="headerlink" title="SQL : RDBMS 关系型数据库管理系统；NoSQL : No Only SQL 非关系型的数据库 “不仅仅是SQL”"></a>SQL : RDBMS 关系型数据库管理系统；NoSQL : No Only SQL 非关系型的数据库 “不仅仅是SQL”</h2><span id="more"></span>
 
+<hr>
 <h3 id="SQL-VS-NoSQL"><a href="#SQL-VS-NoSQL" class="headerlink" title="SQL VS NoSQL"></a>SQL VS NoSQL</h3><h4 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h4><ul>
 <li>高度组织化结构化数据</li>
 <li>结构化查询语言(SQL)</li>
@@ -346,14 +347,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-count">23</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
