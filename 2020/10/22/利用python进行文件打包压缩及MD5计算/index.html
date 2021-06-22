@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/gg.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/gg.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/gg.png">
+  <link rel="mask-icon" href="/images/gg.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.941024.xyz","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="利用Python进行文件打包压缩及MD5计算">
+<meta property="og:url" content="https://www.941024.xyz/2020/10/22/%E5%88%A9%E7%94%A8python%E8%BF%9B%E8%A1%8C%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E5%8E%8B%E7%BC%A9%E5%8F%8AMD5%E8%AE%A1%E7%AE%97/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.941024.xyz/images/profile/md5_checksum.jpg">
+<meta property="og:image" content="https://www.941024.xyz/images/MD5/shell.png">
+<meta property="og:image" content="https://www.941024.xyz/images/MD5/tar_tf.png">
+<meta property="article:published_time" content="2020-10-22T05:00:04.000Z">
+<meta property="article:modified_time" content="2020-10-22T05:00:04.000Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.941024.xyz/images/profile/md5_checksum.jpg">
+
+<link rel="canonical" href="https://www.941024.xyz/2020/10/22/%E5%88%A9%E7%94%A8python%E8%BF%9B%E8%A1%8C%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E5%8E%8B%E7%BC%A9%E5%8F%8AMD5%E8%AE%A1%E7%AE%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>利用Python进行文件打包压缩及MD5计算 | guozenghuang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">guozenghuang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">知识的岛屿越大,无知的海岸线就越长。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-github">
+
+    <a href="https://github.com/guozenghuang" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+
+  </li>
+        <li class="menu-item menu-item-mail">
+
+    <a href="mailto:guozh94@outlook.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>Mail</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.941024.xyz/2020/10/22/%E5%88%A9%E7%94%A8python%E8%BF%9B%E8%A1%8C%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E5%8E%8B%E7%BC%A9%E5%8F%8AMD5%E8%AE%A1%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="guozenghuang">
+      <meta itemprop="description" content="一个94年程序员的个人学习小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="guozenghuang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          利用Python进行文件打包压缩及MD5计算
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-22 13:00:04" itemprop="dateCreated datePublished" datetime="2020-10-22T13:00:04+08:00">2020-10-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/images/profile/md5_checksum.jpg" alt="md5_checksum"></p>
+<h2 id="版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。"><a href="#版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。" class="headerlink" title="版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。"></a>版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。</h2><span id="more"></span>
+
+<hr>
+<h3 id="实现将当前目录的文件进行递归打包到tgz文件中，并计算tgz的MD5值"><a href="#实现将当前目录的文件进行递归打包到tgz文件中，并计算tgz的MD5值" class="headerlink" title="实现将当前目录的文件进行递归打包到tgz文件中，并计算tgz的MD5值"></a>实现将当前目录的文件进行递归打包到tgz文件中，并计算tgz的MD5值</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">console $ python package+md5.py H:\target_path PREFIX_ETL H:\source_path1 H:\source_path2 ...</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> tarfile</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>(<span class="params">arg</span>):</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># 打包文件</span></span><br><span class="line">        output_tgz_file = make_tgz(arg)</span><br><span class="line">        print(<span class="string">&#x27;package file name : &#x27;</span> + output_tgz_file)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># 计算MD5</span></span><br><span class="line">            output_md5_file = md5_calc(output_tgz_file,arg[<span class="number">1</span>],arg[<span class="number">2</span>])</span><br><span class="line">            print(<span class="string">&#x27;md5 file name     : &#x27;</span> + output_md5_file)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            print(<span class="string">&#x27;md5 calc error&#x27;</span>)</span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        print(<span class="string">&#x27;package file error&#x27;</span>)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_tgz</span>(<span class="params">tgz_arg</span>):</span></span><br><span class="line">    out_tgz_file = tgz_arg[<span class="number">1</span>] + <span class="string">&#x27;\\&#x27;</span> + tgz_arg[<span class="number">2</span>] + <span class="string">&#x27;.tgz&#x27;</span></span><br><span class="line">    <span class="keyword">with</span> tarfile.<span class="built_in">open</span>(out_tgz_file,<span class="string">&quot;w:gz&quot;</span>,encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> tar:</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(tgz_arg)):</span><br><span class="line">            <span class="keyword">if</span> i &gt;= <span class="number">3</span>:</span><br><span class="line">                tar.add(tgz_arg[i],os.path.basename(tgz_arg[i]))</span><br><span class="line">        tar.close()</span><br><span class="line">        <span class="keyword">return</span> out_tgz_file</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">md5_calc</span>(<span class="params">outout_tgz_file,output_path,prefix</span>):</span></span><br><span class="line">    <span class="keyword">if</span> os.path.isfile(outout_tgz_file):</span><br><span class="line">        fp = <span class="built_in">open</span>(outout_tgz_file,<span class="string">&#x27;rb&#x27;</span>)</span><br><span class="line">        contexts = fp.read()</span><br><span class="line">        output_md5_file = output_path + <span class="string">&#x27;\\&#x27;</span> + prefix + <span class="string">&#x27;.txt&#x27;</span></span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(output_md5_file,<span class="string">&#x27;w&#x27;</span>,encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> fp:</span><br><span class="line">            MD5_num = hashlib.md5(contexts).hexdigest()</span><br><span class="line">            file_name = os.path.basename(outout_tgz_file)</span><br><span class="line">            fp.write(file_name + <span class="string">&#x27;:&#x27;</span> + MD5_num)</span><br><span class="line">        fp.close()</span><br><span class="line">        <span class="keyword">return</span> output_md5_file</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&#x27;file not exists!&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(sys.argv) &lt; <span class="number">4</span>:</span><br><span class="line">        print(<span class="string">r&#x27;请按照格式进行输入 python package+md5.py 输出文件路径 输出文件前缀 打包路径1 打包路径2 ...&#x27;</span>)</span><br><span class="line">        print(<span class="string">r&#x27;例如： python package+md5.py H:\target_path PREFIX_ETL H:\source_path1 H:\source_path2 ... &#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">&#x27;---------------------------------------&#x27;</span>)</span><br><span class="line">        main(sys.argv)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Python环境下使用powershell或者cmd</li>
+</ul>
+<p><img src="/images/MD5/shell.png" alt="shell"></p>
+<ul>
+<li>tgz文件内容</li>
+</ul>
+<p><img src="/images/MD5/tar_tf.png" alt="tar_tf"></p>
+<ul>
+<li>MD5文件内容<br><code>PACKTEST.tgz:4e6bda55616e7ea99c34a747f2ad6cd6</code></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/11/Flume%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86/" rel="prev" title="Flume日志采集">
+      <i class="fa fa-chevron-left"></i> Flume日志采集
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E4%B8%8A%E7%BA%BF%E6%97%B6%EF%BC%8C%E4%BD%BF%E7%94%A8%E6%B5%81%E6%B0%B4%E7%BA%BF%E8%87%AA%E5%8A%A8%E9%83%A8%E7%BD%B2%EF%BC%8C%E5%85%B6%E4%B8%AD%E6%9C%89MD5checksum%E6%AD%A5%E9%AA%A4%E3%80%82%E4%BB%A5%E5%BE%80%E9%83%BD%E6%98%AF%E5%85%88%E5%9C%A8Linux%E4%B8%8B%E6%89%93%E5%8C%85%E5%A5%BD%E6%96%87%E4%BB%B6%EF%BC%8C%E7%84%B6%E5%90%8E%E4%BC%A0%E8%87%B3Windows%EF%BC%8C%E5%86%8D%E4%BD%BF%E7%94%A8MD5sums%E7%AD%89Windows%E4%B8%8B%E7%9A%84%E8%BD%AF%E4%BB%B6%E6%89%8B%E5%8A%A8%E8%AE%A1%E7%AE%97%E6%89%93%E5%8C%85%E6%96%87%E4%BB%B6%E7%9A%84%E5%80%BC%EF%BC%8C%E5%86%8D%E5%86%99%E5%85%A5txt%E6%96%87%E4%BB%B6%EF%BC%8C%E6%AD%A5%E9%AA%A4%E8%BE%83%E5%A4%9A%E8%BE%83%E4%B8%BA%E7%B9%81%E7%90%90%E3%80%82%E7%8E%B0%E7%94%A8Python%E7%AE%80%E5%8D%95%E5%86%99%E4%BA%86%E4%B8%AA%E6%89%93%E5%8C%85%E8%AE%A1%E7%AE%97MD5%E7%9A%84%E8%84%9A%E6%9C%AC%EF%BC%8C%E7%AE%80%E5%8C%96%E6%89%93%E5%8C%85%E8%AE%A1%E7%AE%97MD5%E6%AD%A5%E9%AA%A4%E3%80%82"><span class="nav-number">1.</span> <span class="nav-text">版本上线时，使用流水线自动部署，其中有MD5checksum步骤。以往都是先在Linux下打包好文件，然后传至Windows，再使用MD5sums等Windows下的软件手动计算打包文件的值，再写入txt文件，步骤较多较为繁琐。现用Python简单写了个打包计算MD5的脚本，简化打包计算MD5步骤。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E5%B0%86%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E7%9A%84%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E9%80%92%E5%BD%92%E6%89%93%E5%8C%85%E5%88%B0tgz%E6%96%87%E4%BB%B6%E4%B8%AD%EF%BC%8C%E5%B9%B6%E8%AE%A1%E7%AE%97tgz%E7%9A%84MD5%E5%80%BC"><span class="nav-number">1.1.</span> <span class="nav-text">实现将当前目录的文件进行递归打包到tgz文件中，并计算tgz的MD5值</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">guozenghuang</p>
+  <div class="site-description" itemprop="description">一个94年程序员的个人学习小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">闽ICP备19024033号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guozenghuang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
