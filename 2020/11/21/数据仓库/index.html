@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/gg.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/gg.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/gg.png">
+  <link rel="mask-icon" href="/images/gg.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.941024.xyz","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据仓库建模基础理论">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据仓库">
+<meta property="og:url" content="https://www.941024.xyz/2020/11/21/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/index.html">
+<meta property="og:site_name" content="guozenghuang">
+<meta property="og:description" content="数据仓库建模基础理论">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.941024.xyz/images/profile/financial_dw.png">
+<meta property="article:published_time" content="2020-11-21T13:42:52.000Z">
+<meta property="article:modified_time" content="2020-11-21T13:42:52.000Z">
+<meta property="article:author" content="guozenghuang">
+<meta property="article:tag" content="数据仓库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.941024.xyz/images/profile/financial_dw.png">
+
+<link rel="canonical" href="https://www.941024.xyz/2020/11/21/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据仓库 | guozenghuang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">guozenghuang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">知识的岛屿越大,无知的海岸线就越长。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签<span class="badge">26</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-github">
+
+    <a href="https://github.com/guozenghuang" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+
+  </li>
+        <li class="menu-item menu-item-mail">
+
+    <a href="mailto:guozh94@outlook.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>Mail</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.941024.xyz/2020/11/21/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="guozenghuang">
+      <meta itemprop="description" content="一个94年程序员的个人学习小站">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="guozenghuang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据仓库
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-21 21:42:52" itemprop="dateCreated datePublished" datetime="2020-11-21T21:42:52+08:00">2020-11-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="/images/profile/financial_dw.png" alt="financial_dw"></p>
+<h2 id="数据仓库建模基础理论"><a href="#数据仓库建模基础理论" class="headerlink" title="数据仓库建模基础理论"></a>数据仓库建模基础理论</h2><span id="more"></span>
+
+<hr>
+<h3 id="数据建模的目标"><a href="#数据建模的目标" class="headerlink" title="数据建模的目标"></a>数据建模的目标</h3><ul>
+<li>性能：良好的数据模型能帮助我们快速查询所需要的数据，减少数据的 I/O 吞吐。</li>
+<li>成本：良好的数据模型能极大地减少不必要的数据冗余，也能实现计算结果复用，极大地降低大数据系统中的存储和计算成本。</li>
+<li>效率：良好的数据模型能极大地改善用户使用数据的体验，提高使用数据的效率。</li>
+<li>质量：良好的数据模型能改善数据统计口径的不一致性，减少数据计算错误的可能性。</li>
+</ul>
+<h3 id="数据仓库建模方法论"><a href="#数据仓库建模方法论" class="headerlink" title="数据仓库建模方法论"></a>数据仓库建模方法论</h3><ul>
+<li>ER模型<ul>
+<li>数据仓库之父 Bill lnmon 提出的建模方法是从全企业的高度设计3NF 模型，用实体关系（ Entity Relationship, ER ）模型描述企业业务，在范式理论上符合 3NF 。数据仓库中的 3NF 与 OLTP 系统中的 3NF 的区别在于，它是站在企业角度面向主题的抽象，而不是针对某个具体业务流程的实体对象关系的抽象。其具有以下几个特点：1.需要全面了解企业业务和数据；2.实施周期非常长；3.对建模人员的能力要求非常高。</li>
+<li>主要目的是按照企业角度按主题进行相似性组合和合并，并进行一致性处理，为数据分析决策服务。</li>
+<li>建模步骤：<ol>
+<li>高层模型：一个高度抽象的模型，描述主要的主题以及主题间的关系，用于描述企业的业务总体概况。</li>
+<li>中层模型：在高层模型的基础上，细化主题的数据项。</li>
+<li>物理模型（也叫底层模型）：在中层模型的基础上，考虑物理存储，同时基于性能和平台特点进行物理属性的设计，也可能做一些表的合并、分区的设计等。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>维度模型(Kimball模型)<ul>
+<li>为数据分析服务，关注点在于如何更快的完成需求分析，同时具有较好的 大规模复杂查询响应性能。</li>
+<li>设计步骤：<ol>
+<li>选择需要进行分析决策的业务过程，业务过程可以是单个业务事件，比如交易的支付、退款等；也可以是某个事件的状态，比如当前的账户余额等；还可以是一系列相关业务事件组成的业务流程，具体需要看我们分析的是某些事件发生情况，还是当前状态，或是事件流转效率。</li>
+<li>选择粒度。</li>
+<li>识别维表。选择好粒度之后，就需要基于此粒度设计维表，包括维度属性，用于分析时进行分组和筛选。</li>
+<li>选择事实。确定分析需要衡量的指标。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>Data Vault模型<ul>
+<li>ER模型的衍生设计，出发点是为了实现数据的整合，强调历史性、可追溯性和原子性。</li>
+<li>组成部分：<ol>
+<li>Hub ：是企业的核心业务实体，由 实体 key 、数据仓库序列代理键、装载时间、数据来源组成。</li>
+<li>Link ：代表 Hub 之间的关系。这里与 模型最大的区别是将关系作为一个独立的单元抽象，可以提升模型的扩展性。它可以直接描述 : :n n:n 的关系，而不需要做任何变更。它由 Hub的代理键、装载时间、数据来源组成。</li>
+<li>Satellite ：是 Hub 的详细描述内容， 一个 ub 可以有多个 Satellite它由 Hub 的代理键、装载时间、来源类型、详细的 Hub 描述信息组成。</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据整合和管理"><a href="#数据整合和管理" class="headerlink" title="数据整合和管理"></a>数据整合和管理</h3><ul>
+<li>规范定义<ul>
+<li>规范定义指以维度建模作为理论基础 构建总线矩阵，划分和定义数据域、业务过程、维度、度量 原子指标、修饰类型、修饰词、时间周期、派生指标。</li>
+</ul>
+</li>
+<li>模型设计<ul>
+<li>模型层次<ul>
+<li>操作数据层ODS<ul>
+<li>同步：结构化数据增量或全量同步到HDFS</li>
+<li>结构化:非结构化(日志)结构化处理并存储到HDFS</li>
+<li>累计历史、清洗:根据数据业务需求及审计要求保存历史数据、清洗数据。</li>
+</ul>
+</li>
+<li>公共维度模型层CDM<ul>
+<li>存储明细事实数据、维表数据及公共指标汇总数据，其中明细事实数据、维表数据一般根据ODS层数据架构生成；公共指标汇总一般根据维表数据和明细事实数据加工生成。</li>
+<li>明细数据层DWD<ul>
+<li>以星型模型为基础，采用一些维度退化手法，将维度表退化至事实表中，减少事实表和维表的关联，提高明细数据表的易用性。</li>
+</ul>
+</li>
+<li>汇总数据层DWS<ul>
+<li>指标维度退化，采取更多的宽表化手段构建公共指标数据层，提供公共指标的复用性，减少重复加工。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>应用数据层ADS<ul>
+<li>存放数据产品个性化的统计指标数据吗，根据CDM层与ODS层加工生成。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>基本原则<ul>
+<li>高内聚和低耦合</li>
+<li>核心模型与扩展模型分离</li>
+<li>建立核心模型与扩展模型体系，核心模型包括的字段支持常用的核心业务，扩展模型包括的字段支持个性化或少量应用的需要，不能让扩展模型的字段过度侵入核心模型，以免破坏核心模型的架构简洁性与可维护性。</li>
+<li>公共处理逻辑下沉及单一</li>
+<li>成本与性能平衡</li>
+<li>数据可回滚</li>
+<li>一致性</li>
+</ul>
+</li>
+<li>模型实施<ul>
+<li>kimball模型实施过程</li>
+<li>高层模型<ul>
+<li>高层模型设计阶段的直接产出目标是创建高层维度模型图，它是对业务过程中的维表和事实表的图形描述。确定维表创建初始属性列表，为每个事实表建立度量。</li>
+</ul>
+</li>
+<li>详细模型<ul>
+<li>详细的维度建模过程是为高层模型填补缺失的信息，解决设计问题，并不断测试模型能否满足业务需求，确保模型的完备性。确定每个维表的属性和每个事实表的度量，并确定信息来源的位置、定义，确属性和度量如何填入模型的初步业务规则。</li>
+</ul>
+</li>
+<li>模型审查<ul>
+<li>设计文档，提交ETL设计和开发</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="维度设计"><a href="#维度设计" class="headerlink" title="维度设计"></a>维度设计</h3><ul>
+<li>维度设计基础<ul>
+<li>度量称为”事实”，环境描述为”维度”，维度是用于分析事实所需要的多样环境。</li>
+<li>维度表使用主键标识唯一性，主键也要确保与之相连的任何事实表存在引用完整性的基础。<ul>
+<li>主键分为：代理键和自然键。<ul>
+<li>代理键不具有业务含义的键，一般用于处理缓慢变化维度；</li>
+<li>自然键是具有业务含义的键，比如商品，在ETL过程中，对于商品维度表的每一行，可以生成一个唯一的代理键与之对应，本身的自然键可能是商品ID等。</li>
+</ul>
+</li>
+<li>维表基础设计方法<ol>
+<li>选择维度或新建维度。需要保证维度的唯一性</li>
+<li>确定主维表。</li>
+<li>确定相关维表。</li>
+<li>确定维度属性。<ul>
+<li>尽可能生成丰富的维度属性。</li>
+<li>尽可能多地给出包括一些富有意义的文字性描述。例如商品ID和商品标题，需要都放在相关维度表里</li>
+<li>区分数值型属性和事实<blockquote>
+<p>数值型字段是作为事实还是维度属性，可以参考字段的一般用途。如果通常用于查询约束条件或分组统计，则是作为维度属性；如果通常用于参与度量的计算， 则是作为事实。比如商品价格，可以用于查询约束条件或统计价格区间 的商品数量，此时是作为维度属性使用的；也可以用于统计某类目 下商品的平均价格，此时是作为事实使用的。另外，如果数值型字段是离散值，则作为维度属性存在的可能性较大；如果数值型字段是连续值 ，则作为度量存在的可能性较大，但并不绝对，需要同时参考字段的具体用途。</p>
+</blockquote>
+</li>
+<li>尽量沉淀出通用的维度属性</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>规范化和反规范化<ul>
+<li>规范化<ul>
+<li>属性层次被实例化为一系列维度，而不是单一的维度时，为雪花模型。</li>
+</ul>
+</li>
+<li>反规范化<ul>
+<li>将维度的属性层次合并到单个维度中的操作被称为反规范化。</li>
+<li>规避雪花模型带来的大量关联操作导致的查询性能差问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>高级维度设计<ul>
+<li>维度整合<ul>
+<li>主从表处理<ul>
+<li>主从表将两个表或多个表都有的字段放在主表中，丛属信息分别放在各自的从表中。主键可以采用复合主键、源主键和系统或表区别标志；</li>
+<li>直接合并，共有信息和个性信息都放在同一个表中，如果表字段的重合度较低，则会出现大量空值，对于存储和易用性会有影响。</li>
+<li>不合并，源表的结构及主键等差异大无法合并，分开存储。</li>
+</ul>
+</li>
+<li>垂直整合，不同的来源包含相同的数据集，只是存储的信息不同。</li>
+<li>水平整合，不同的来源表包含不同的数据集，不同子集之间无交叉，也可以存在部分交叉。</li>
+</ul>
+</li>
+<li>水平拆分<ul>
+<li>拆分原则<ul>
+<li>扩展性:当源端数据、业务变化时，能够通过较少的成本快速扩展模型，保证核心模型的相对稳定性。</li>
+<li>效能:在性能和成本方面相对平很，空间换时间或时间换空间。</li>
+<li>易用性:模型可理解性高、访问复杂度低。用户能够方便地从模型中找到对应的数据表，方便查询和分析。</li>
+</ul>
+</li>
+<li>两个依据<ul>
+<li>业务的关联程度</li>
+<li>维度的不同分类的属性差异情况<ul>
+<li>定义一个主维度用于存放公共属性；同时定义多个子维度，其中除了包含公共属性外，还包含各自的特殊属性。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>垂直拆分<ul>
+<li>冷热数据分离，数据源产出时间分离，变化稳定属性分离，基于主从维度属性表区分相关数据，垂直拆分冷热数据。</li>
+</ul>
+</li>
+<li>历史归档<ul>
+<li>定期将历史数据归档至历史维表，在设计维表时设计历史维表和维表。</li>
+<li>归档策略<ul>
+<li>基于binlog解析获取每日增量数据，通过增量merge全量的方式获取最新的全量数据。</li>
+<li>最定义归档策略</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>维度变化<ul>
+<li>缓慢变化维<ol>
+<li>重写维度值，使用获取最新的维度值</li>
+<li>插入新的维度行，保留历史数据，维度值变化前的事实和过去的维度值关联，维度值变化后的事实和当前的维度值关联。</li>
+<li>添加维度列。将变化前后的列记录在维表里</li>
+</ol>
+<ul>
+<li>历史拉链法<ul>
+<li>通过添加两个时间戳字段，将变更数据以天粒度记录夏利。</li>
+<li>将不同的数据变更存储在分区中，然后通过start_dt和end_dt来限制获取的数据</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>快照维表<ul>
+<li>根据周期保留全量快照数据。</li>
+</ul>
+</li>
+<li>极限存储<ul>
+<li>透明化<ul>
+<li>底层数据存储为历史拉链存储，将start_dt和end_dt转换为ds=xxxx查询</li>
+</ul>
+</li>
+<li>分月历史拉链表</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="事实表设计"><a href="#事实表设计" class="headerlink" title="事实表设计"></a>事实表设计</h3><ul>
+<li>事实表基础<ul>
+<li>特性<ul>
+<li>引用的维度和</li>
+<li>业务过程相关粒度</li>
+</ul>
+</li>
+<li>粒度<ul>
+<li><strong><em>一条记录所表达的业务细节程度，通常粒度可以时维度属性组合所表达的细节程度，或者时所表示的具体业务含义。</em></strong></li>
+<li>事实表的类型<ul>
+<li>事务事实表<ul>
+<li>描述业务过程，跟踪空间或时间上某点的度量事件，保存的时最原子的数据，也称为”原子事实表”</li>
+</ul>
+</li>
+<li>周期快照事实表<ul>
+<li>具有规律性、可预见的时间间隔记录事实，时间间隔如天、月、年等。</li>
+</ul>
+</li>
+<li>累积快照事实表<ul>
+<li>表述过程的开始和结束之间的关键步骤事件，覆盖过程的整个生命周期。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>设计原则<ul>
+<li>尽可能包含所有与业务过程相关的事实<ul>
+<li>事实表设计的目的是为了度量业务过程，所以分析哪些事实与业务过程有关是设计中非常重要的关注点。在事实表中应该尽量包含所有与业务过程相关的事实</li>
+</ul>
+</li>
+<li>只选择与业务过程相关的事实</li>
+<li>分解不可加性事实为可加的组件<ul>
+<li>对于不具备可加性条件的事实，需要分解为可加的组件。比如订单的优惠率，应该分解为订单原价金额与订单优惠金额两个事实存储在事实表中。</li>
+</ul>
+</li>
+<li>在选择维度和事实之前必须先声明粒度</li>
+<li>在同一个事实表中不能有多种不同粒度的事实</li>
+<li>事实的单位要保持一致</li>
+<li>对事实的 null 值要处理</li>
+<li>使用退化维度提高事实表的易用性</li>
+</ul>
+</li>
+<li>事实表设计方法<ul>
+<li>选择业务过程</li>
+<li>声明粒度</li>
+<li>确定维度</li>
+<li>确定事实</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>事实事务表<ul>
+<li>针对定义业务过程的个体行为，提供丰富的分析能力，作为数据仓库原子的明细数据。</li>
+<li>单事务事实表<ul>
+<li>一个业务过程对应一个事务事实表</li>
+</ul>
+</li>
+<li>多事务事实表<ul>
+<li>将不同的事实放到同一个事实表中，即同一个事实表包含不同的业务过程。</li>
+<li>不同业务过程的事实使用不同的事实字段进行存放</li>
+<li>不同业务过程的事实使用同一个事实字段进行存储，但增加一个业务过程标签。</li>
+<li>相同粒度的事务过程适合存放在多事务事实表中</li>
+<li>多事务事实表的选择<ol>
+<li>当不同业务过程的度量比较相似、差异不大时，可以采用第多事务事实表的设计方式，使用同一个字段来表示度量数据。但这种方式存在一个问题，在同 个周期内会存在多条记录。</li>
+<li>当不同业务过程的度量差异较大时，可以选择第 一种多事务事实表的设计方式，将不同业务过程的度量使用不同字段冗余到中，非当前业务过程则置零表示。这种方式所存在的问题是度字段零值较多。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>事实的设计准则<ul>
+<li>事实完整性<ul>
+<li>包含与其描述的过程有关的所有事实，即尽可能多地获取所有的度量。</li>
+</ul>
+</li>
+<li>事实一致性<ul>
+<li>在确定事务事实表的事实时，明确存储每一个事实以确保度量的一致性。</li>
+</ul>
+</li>
+<li>事实可加性<ul>
+<li>非可加性度量，拆解成可加性度量。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>周期快照事实表<ul>
+<li>特性<ul>
+<li>快照事实表的设计一些区别于事务事实表设计的性质。事务事实表的粒度能以多种方式表达，快照事实表的粒度通常以维度形式声明；</li>
+<li>用快照采样状态<ul>
+<li>快照事实表以预定的间隔采样状态度量。</li>
+</ul>
+</li>
+<li>快照粒度<ul>
+<li>多维声明快照粒度</li>
+</ul>
+</li>
+<li>密度与稀疏性</li>
+<li>半可加性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>全量快照表</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/" rel="tag"># 数据仓库</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/11/Flume%E6%97%A5%E5%BF%97%E9%87%87%E9%9B%86/" rel="prev" title="Flume日志采集">
+      <i class="fa fa-chevron-left"></i> Flume日志采集
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/06/22/%E5%88%A9%E7%94%A8python%E8%BF%9B%E8%A1%8C%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E5%8E%8B%E7%BC%A9%E5%8F%8AMD5%E8%AE%A1%E7%AE%97/" rel="next" title="利用Python脚本进行文件打包压缩及MD5计算">
+      利用Python脚本进行文件打包压缩及MD5计算 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E5%BB%BA%E6%A8%A1%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA"><span class="nav-number">1.</span> <span class="nav-text">数据仓库建模基础理论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BB%BA%E6%A8%A1%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="nav-number">1.1.</span> <span class="nav-text">数据建模的目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93%E5%BB%BA%E6%A8%A1%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="nav-number">1.2.</span> <span class="nav-text">数据仓库建模方法论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%95%B4%E5%90%88%E5%92%8C%E7%AE%A1%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">数据整合和管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%B4%E5%BA%A6%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.4.</span> <span class="nav-text">维度设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%AE%9E%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.5.</span> <span class="nav-text">事实表设计</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">guozenghuang</p>
+  <div class="site-description" itemprop="description">一个94年程序员的个人学习小站</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">26</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">闽ICP备19024033号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">guozenghuang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
